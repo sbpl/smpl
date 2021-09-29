@@ -368,7 +368,7 @@ void ConvertJointVariablePathToJointTrajectory(
     const std::string& multi_dof_joint_state_frame,
     moveit_msgs::RobotTrajectory& traj)
 {
-    SMPL_INFO("Convert Variable Path to Robot Trajectory");
+    // SMPL_INFO("Convert Variable Path to Robot Trajectory");
 
     traj.joint_trajectory.header.frame_id = joint_state_frame;
     traj.multi_dof_joint_trajectory.header.frame_id = multi_dof_joint_state_frame;
@@ -396,9 +396,9 @@ void ConvertJointVariablePathToJointTrajectory(
         }
     }
 
-    SMPL_INFO("  Path includes %zu single-dof joints and %zu multi-dof joints",
-            traj.joint_trajectory.joint_names.size(),
-            traj.multi_dof_joint_trajectory.joint_names.size());
+    // SMPL_INFO("  Path includes %zu single-dof joints and %zu multi-dof joints",
+    //         traj.joint_trajectory.joint_names.size(),
+    //         traj.multi_dof_joint_trajectory.joint_names.size());
 
     // empty or number of points in the path
     if (!traj.joint_trajectory.joint_names.empty()) {
@@ -1211,7 +1211,7 @@ bool PlannerInterface::plan(double allowed_time, std::vector<RobotState>& path)
     SV_SHOW_DEBUG_NAMED("bfs_walls", getBfsWallsVisualization());
     SV_SHOW_DEBUG_NAMED("bfs_values", getBfsValuesVisualization());
 
-    SMPL_WARN_NAMED(PI_LOGGER, "Planning!!!!!");
+    // SMPL_WARN_NAMED(PI_LOGGER, "Planning!!!!!");
     bool b_ret = false;
     std::vector<int> solution_state_ids;
 
@@ -1396,7 +1396,7 @@ bool PlannerInterface::parsePlannerID(
 
     boost::smatch sm;
 
-    SMPL_INFO("Match planner id '%s' against regex '%s'", planner_id.c_str(), alg_regex.str().c_str());
+    // SMPL_INFO("Match planner id '%s' against regex '%s'", planner_id.c_str(), alg_regex.str().c_str());
     if (!boost::regex_match(planner_id, sm, alg_regex)) {
         return false;
     }
