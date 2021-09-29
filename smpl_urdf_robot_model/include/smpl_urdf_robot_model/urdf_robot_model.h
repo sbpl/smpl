@@ -38,6 +38,9 @@ struct URDFRobotModel :
     auto computeFK(const smpl::RobotState& state)
         -> Eigen::Affine3d override;
 
+    auto computeFKLink(const smpl::RobotState& state, const Link* link)
+        -> Eigen::Affine3d;
+
     double minPosLimit(int jidx) const override;
     double maxPosLimit(int jidx) const override;
     bool hasPosLimit(int jidx) const override;
