@@ -273,6 +273,16 @@ auto CollisionSpace::getCollisionRobotVisualization(
     for (auto& m : markers.markers) {
         m.header.frame_id = m_grid->getReferenceFrame();
     }
+
+    for (int ssidx : m_abcs->groupSpheresStateIndices(m_gidx)) {
+        m_abcs->updateSphereStates(ssidx);
+    }
+    auto markers_ao = m_abcs->getVisualization(m_gidx);
+    for (auto& m : markers_ao.markers) {
+        m.header.frame_id = m_grid->getReferenceFrame();
+    }
+    markers.markers.insert(markers.markers.end(), markers_ao.markers.begin(), markers_ao.markers.end());
+
     return markers;
 }
 
