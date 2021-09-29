@@ -595,6 +595,19 @@ int ManipLattice::cost(
     return DefaultCostMultiplier;
 }
 
+static
+bool WithinPathOrientationTolerance(
+    const Affine3& A,
+    const double tol[3])
+{
+    double yaw, pitch, roll;
+    get_euler_zyx(A.rotation(), yaw, pitch, roll);
+
+    SMPL_WARN("Check (%f, %f, %f) for path constraints", roll, pitch, yaw);
+
+    return (std::fabs(roll) < tol[0]) && (std::fabs(pitch) < tol[1]) && (std::fabs(yaw) < tol[2]);
+}
+
 bool ManipLattice::checkAction(const RobotState& state, const Action& action)
 {
     std::uint32_t violation_mask = 0x00000000;
@@ -625,6 +638,20 @@ bool ManipLattice::checkAction(const RobotState& state, const Action& action)
 //            violation_mask |= 0x00000002;
 //            break;
 //        }
+
+        if (m_have_path_constraint)
+        {
+            auto pose = computePlanningFrameFK(istate);
+            if (!WithinPathOrientationTolerance(
+                    pose,
+                    m_path_constraint.rpy_tolerance))
+            {
+                SMPL_WARN("Path constraint violation!");
+                SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        -> violates path constraints");
+                violation_mask |= 0x00000016;
+                break;
+            }
+        }
     }
 
     if (violation_mask) {
@@ -842,6 +869,27 @@ bool ManipLattice::setGoal(const GoalConstraint& goal)
     }
 
     return success;
+}
+
+bool ManipLattice::setPathConstraint(const GoalConstraint& path_constraint)
+{
+    auto start_pose = computePlanningFrameFK(startState()), goal_pose = goal().pose;
+
+    if (!WithinPathOrientationTolerance(
+            start_pose,
+            path_constraint.rpy_tolerance) ||
+        !WithinPathOrientationTolerance(
+            goal_pose,
+            path_constraint.rpy_tolerance))
+    {
+        SMPL_WARN("Path constraint violation (start and/or goal)!");
+        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        -> start and/or goal violate path constraints");
+        return false;
+    }
+
+    m_path_constraint = path_constraint;
+    m_have_path_constraint = true;
+    return true;
 }
 
 void ManipLattice::setVisualizationFrameId(const std::string& frame_id)

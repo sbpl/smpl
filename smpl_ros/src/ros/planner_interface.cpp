@@ -737,6 +737,19 @@ bool PlannerInterface::solve(
         return false;
     }
 
+    if (!req.path_constraints.orientation_constraints.empty())
+    {
+        if (!setPathConstraint(req.path_constraints)) {
+            SMPL_ERROR("Failed to set path constraints");
+            res.planning_time = to_seconds(clock::now() - then);
+            res.error_code.val = moveit_msgs::MoveItErrorCodes::INVALID_GOAL_CONSTRAINTS;
+            return false;
+        }
+    }
+    else {
+        m_pspace->disablePathConstraints();
+    }
+
     std::vector<RobotState> path;
     if (!plan(req.allowed_planning_time, path)) {
         SMPL_ERROR("Failed to plan within alotted time frame (%0.2f seconds, %d expansions)", req.allowed_planning_time, m_planner->get_n_expands());
@@ -1150,6 +1163,40 @@ bool PlannerInterface::setStart(const moveit_msgs::RobotState& state)
 
     if (m_planner->set_start(start_id) == 0) {
         SMPL_ERROR("Failed to set start state");
+        return false;
+    }
+
+    return true;
+}
+
+bool PlannerInterface::setPathConstraint(const moveit_msgs::Constraints& v_path_constraints)
+{
+    GoalConstraint path_constraint;
+
+    if (IsPoseConstraint(v_path_constraints)) {
+        SMPL_INFO_NAMED(PI_LOGGER, "Got path pose constraint!");
+        if (!ExtractPoseGoal({ v_path_constraints }, path_constraint)) {
+            SMPL_ERROR("Failed to get path constraint pose");
+            return false;
+        }
+
+        if (path_constraint.pose.matrix() != Eigen::Matrix4d::Identity() ||
+                path_constraint.rpy_tolerance[0] <= 0.0 ||
+                path_constraint.rpy_tolerance[1] <= 0.0 ||
+                path_constraint.rpy_tolerance[2] <= 0.0)
+        {
+            SMPL_ERROR("Improper path constraint. Need identity pose and non-zero orientation tolerances.");
+            return false;
+        }
+    }
+    else
+    {
+        SMPL_ERROR("Path constraint type not supported! Only pose constraints are supported.");
+        return false;
+    }
+
+    if (!m_pspace->setPathConstraint(path_constraint)) {
+        SMPL_ERROR("Failed to set path constraint");
         return false;
     }
 

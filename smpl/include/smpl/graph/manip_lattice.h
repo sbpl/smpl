@@ -141,6 +141,8 @@ public:
     ///@{
     bool setStart(const RobotState& state) override;
     bool setGoal(const GoalConstraint& goal) override;
+    bool setPathConstraint(const GoalConstraint& path_constraint) override;
+    bool disablePathConstraints() override { m_have_path_constraint = false; };
     int getStartStateID() const override;
     int getGoalStateID() const override;
     bool extractPath(
@@ -222,6 +224,9 @@ private:
     std::vector<ManipLatticeState*> m_states;
 
     std::string m_viz_frame_id;
+
+    GoalConstraint m_path_constraint;
+    bool m_have_path_constraint = false;
 
     bool setGoalPose(const GoalConstraint& goal);
     bool setGoalPoses(const GoalConstraint& goal);

@@ -170,6 +170,7 @@ protected:
     // Set start configuration
     bool setGoal(const GoalConstraints& v_goal_constraints);
     bool setStart(const moveit_msgs::RobotState& state);
+    bool setPathConstraint(const moveit_msgs::Constraints& v_path_constraints);
 
     // Retrieve plan from sbpl
     bool plan(double allowed_time, std::vector<RobotState>& path);

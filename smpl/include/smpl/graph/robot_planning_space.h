@@ -64,6 +64,10 @@ public:
 
     virtual bool setStart(const RobotState& state);
     virtual bool setGoal(const GoalConstraint& goal);
+    virtual bool setPathConstraint(const GoalConstraint& path_constraint) {
+        return true;
+    };
+    virtual bool disablePathConstraints() {};
 
     virtual int getStartStateID() const = 0;
     virtual int getGoalStateID() const = 0;
