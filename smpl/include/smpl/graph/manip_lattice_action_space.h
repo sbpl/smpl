@@ -61,7 +61,7 @@ public:
 
     using const_iterator = std::vector<MotionPrimitive>::const_iterator;
 
-    bool init(ManipLattice* space);
+    bool init(RobotPlanningSpace* space);
 
     bool load(const std::string& action_filename);
 

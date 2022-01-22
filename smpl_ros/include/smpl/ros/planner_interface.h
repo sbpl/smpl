@@ -94,7 +94,18 @@ public:
     bool solve(
         const moveit_msgs::PlanningScene& planning_scene,
         const moveit_msgs::MotionPlanRequest& req,
+        moveit_msgs::MotionPlanResponse& res,
+        bool passthrough=true);
+
+    bool run_solve(
+        const moveit_msgs::MotionPlanRequest& req,
         moveit_msgs::MotionPlanResponse& res);
+    bool solve_with_constraints(
+        const moveit_msgs::PlanningScene& planning_scene,
+        const moveit_msgs::MotionPlanRequest& req,
+        moveit_msgs::MotionPlanResponse& res,
+        const std::vector<moveit_msgs::CollisionObject>& movables,
+        const std::vector<std::vector<double> >& cvecs);
 
     static
     bool SupportsGoalConstraints(

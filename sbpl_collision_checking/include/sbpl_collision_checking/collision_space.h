@@ -53,6 +53,7 @@
 #include <sbpl_collision_checking/self_collision_model.h>
 #include <sbpl_collision_checking/world_collision_model.h>
 #include <sbpl_collision_checking/types.h>
+#include <sbpl_collision_checking/shapes.h>
 
 namespace smpl {
 namespace collision {
@@ -149,7 +150,7 @@ public:
     auto getRobotVisualization() const -> visualization_msgs::MarkerArray;
 
     auto getCollisionWorldVisualization() const
-        -> visualization_msgs::MarkerArray;
+        -> visualization_msgs::MarkerArray override;
     auto getCollisionRobotVisualization()
         -> visualization_msgs::MarkerArray;
     auto getCollisionRobotVisualization(const std::vector<double>& vals)

@@ -44,7 +44,7 @@
 
 namespace smpl {
 
-bool ManipLatticeActionSpace::init(ManipLattice* space)
+bool ManipLatticeActionSpace::init(RobotPlanningSpace* space)
 {
     if (!ActionSpace::init(space)) {
         return false;

@@ -37,6 +37,7 @@
 
 // system includes
 #include <sbpl/discrete_space_information/environment.h>
+#include <moveit_msgs/CollisionObject.h>
 
 // project includes
 #include <smpl/collision_checker.h>
@@ -47,6 +48,7 @@
 #include <smpl/spatial.h>
 #include <smpl/types.h>
 #include <smpl/graph/goal_constraint.h>
+#include <smpl/console/detail/console_ros.h>
 
 namespace smpl {
 
@@ -128,6 +130,13 @@ public:
         bool verbose,
         FILE* f = nullptr) override = 0;
     ///@}
+
+    virtual void InitMovableSet(const std::vector<moveit_msgs::CollisionObject>& movables) {
+        SMPL_ERROR("Calling base class function");
+    };
+    virtual void SetConstraints(const std::vector<std::vector<double> >& constraints) {
+        SMPL_ERROR("Calling base class function");
+    };
 
 private:
 

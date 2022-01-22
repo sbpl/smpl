@@ -50,6 +50,7 @@
 #include <smpl/console/console.h>
 #include <smpl/console/nonstd.h>
 #include <smpl/debug/visualize.h>
+#include <smpl/graph/manip_lattice_cbs.h>
 #include <smpl/heuristic/bfs_heuristic.h>
 #include <smpl/heuristic/egraph_bfs_heuristic.h>
 #include <smpl/heuristic/multi_frame_bfs_heuristic.h>
@@ -216,6 +217,14 @@ PlannerInterface::PlannerInterface(
         const PlanningParams& p)
     {
         return MakeManipLatticeEGraph(r, c, p, m_grid);
+    };
+
+    m_space_factories["manip_cbs"] = [this](
+        RobotModel* r,
+        CollisionChecker* c,
+        const PlanningParams& p)
+    {
+        return MakeManipLatticeCBS(r, c, p, m_grid);
     };
 
     m_space_factories["workspace"] = [this](
@@ -693,7 +702,8 @@ bool PlannerInterface::solve(
     // TODO: this planning scene is probably not being used in any meaningful way
     const moveit_msgs::PlanningScene& planning_scene,
     const moveit_msgs::MotionPlanRequest& req,
-    moveit_msgs::MotionPlanResponse& res)
+    moveit_msgs::MotionPlanResponse& res,
+    bool passthrough)
 {
     ClearMotionPlanResponse(req, res);
 
@@ -750,6 +760,17 @@ bool PlannerInterface::solve(
         m_pspace->disablePathConstraints();
     }
 
+    if (passthrough) {
+        return run_solve(req, res);
+    }
+}
+
+bool PlannerInterface::run_solve(
+    const moveit_msgs::MotionPlanRequest& req,
+    moveit_msgs::MotionPlanResponse& res)
+{
+    auto then = clock::now();
+
     std::vector<RobotState> path;
     if (!plan(req.allowed_planning_time, path)) {
         SMPL_ERROR("Failed to plan within alotted time frame (%0.2f seconds, %d expansions)", req.allowed_planning_time, m_planner->get_n_expands());
@@ -801,6 +822,26 @@ bool PlannerInterface::solve(
 
     res.planning_time = to_seconds(clock::now() - then);
     return true;
+}
+
+bool PlannerInterface::solve_with_constraints(
+    // TODO: this planning scene is probably not being used in any meaningful way
+    const moveit_msgs::PlanningScene& planning_scene,
+    const moveit_msgs::MotionPlanRequest& req,
+    moveit_msgs::MotionPlanResponse& res,
+    const std::vector<moveit_msgs::CollisionObject>& movables,
+    const std::vector<std::vector<double> >& cvecs)
+{
+    if (this->solve(planning_scene, req, res, false))
+    {
+        if (!cvecs.empty()) {
+            m_pspace->SetConstraints(cvecs);
+        }
+        m_pspace->InitMovableSet(movables);
+        return this->run_solve(req, res);
+    }
+
+    return false;
 }
 
 static

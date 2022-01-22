@@ -40,7 +40,10 @@
 // project includes
 #include <smpl/extension.h>
 #include <smpl/types.h>
+#include <smpl/shapes.h>
 #include <smpl/debug/marker.h>
+#include <smpl/console/detail/console_ros.h>
+#include <visualization_msgs/MarkerArray.h>
 
 namespace smpl {
 
@@ -94,7 +97,33 @@ public:
     ///@{
     virtual auto getCollisionModelVisualization(const RobotState& state)
         -> std::vector<visual::Marker>;
+    virtual auto getCollisionWorldVisualization() const
+        -> visualization_msgs::MarkerArray;
     ///@}
+
+    // Adding functions that are defined in collision space and used in manip_lattice
+    virtual auto getReferenceFrame() const -> const std::string& {
+        SMPL_ERROR("Calling base class function");
+    };
+    virtual bool insertObject(const smpl::collision::CollisionObject* object) {
+        SMPL_ERROR("Calling base class function");
+    };
+    virtual bool removeObject(const smpl::collision::CollisionObject* object) {
+        SMPL_ERROR("Calling base class function");
+    };
+    auto findCollisionObject(const std::string& id) const
+    -> smpl::collision::CollisionObject*
+    {
+        for (auto& object : m_collision_objects) {
+            if (object->id == id) {
+                return object.get();
+            }
+        }
+        return nullptr;
+    }
+
+    std::vector<std::unique_ptr<smpl::collision::CollisionShape> > m_collision_shapes;
+    std::vector<std::unique_ptr<smpl::collision::CollisionObject> > m_collision_objects;
 };
 
 class CollisionDistanceExtension : public virtual Extension
