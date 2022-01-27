@@ -171,7 +171,8 @@ set(SMPL_LIBRARY_SOURCES
     src/search/awastar.cpp
     src/steer/steer.cpp
     src/unicycle/dubins.cpp
-    src/unicycle/unicycle.cpp)
+    src/unicycle/unicycle.cpp
+    src/constants.cpp)
 
 set(CMAKE_DEBUG_POSTFIX "_d")
 

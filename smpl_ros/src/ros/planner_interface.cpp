@@ -830,7 +830,8 @@ bool PlannerInterface::solve_with_constraints(
     const moveit_msgs::MotionPlanRequest& req,
     moveit_msgs::MotionPlanResponse& res,
     const std::vector<moveit_msgs::CollisionObject>& movables,
-    const std::vector<std::vector<double> >& cvecs)
+    const std::vector<std::vector<double> >& cvecs,
+    const std::vector<std::pair<int, clutter::Trajectory*> >& movable_agents_traj)
 {
     if (this->solve(planning_scene, req, res, false))
     {
@@ -838,6 +839,7 @@ bool PlannerInterface::solve_with_constraints(
             m_pspace->SetConstraints(cvecs);
         }
         m_pspace->InitMovableSet(movables);
+        m_pspace->InitMovableAgentsTraj(movable_agents_traj);
         return this->run_solve(req, res);
     }
 

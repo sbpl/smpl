@@ -134,6 +134,10 @@ public:
     virtual void InitMovableSet(const std::vector<moveit_msgs::CollisionObject>& movables) {
         SMPL_ERROR("Calling base class function");
     };
+    virtual void InitMovableAgentsTraj(const std::vector<std::pair<int, clutter::Trajectory*>>&
+        movable_agents_traj){
+        SMPL_ERROR("InitMovableAgentsTraj: Calling base class function");
+    };
     virtual void SetConstraints(const std::vector<std::vector<double> >& constraints) {
         SMPL_ERROR("Calling base class function");
     };

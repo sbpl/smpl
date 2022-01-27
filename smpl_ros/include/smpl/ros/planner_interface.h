@@ -51,6 +51,7 @@
 #include <visualization_msgs/MarkerArray.h>
 
 // project includes
+#include <smpl/types.h>
 #include <smpl/collision_checker.h>
 #include <smpl/forward.h>
 #include <smpl/occupancy_grid.h>
@@ -105,7 +106,8 @@ public:
         const moveit_msgs::MotionPlanRequest& req,
         moveit_msgs::MotionPlanResponse& res,
         const std::vector<moveit_msgs::CollisionObject>& movables,
-        const std::vector<std::vector<double> >& cvecs);
+        const std::vector<std::vector<double> >& cvecs,
+        const std::vector<std::pair<int, clutter::Trajectory*> >& movable_agents_traj);
 
     static
     bool SupportsGoalConstraints(

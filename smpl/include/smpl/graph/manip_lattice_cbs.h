@@ -46,6 +46,7 @@
 #include <moveit_msgs/CollisionObject.h>
 
 // project includes
+#include <smpl/constants.hpp>
 #include <smpl/angles.h>
 #include <smpl/time.h>
 #include <smpl/collision_checker.h>
@@ -184,6 +185,10 @@ public:
         m_movables.insert(m_movables.begin(), movables.begin(), movables.end());
         initMovablesMap();
     }
+    void InitMovableAgentsTraj(const std::vector<std::pair<int, clutter::Trajectory*>>&
+        movable_agents_traj) override {
+        m_movable_agents_traj = movable_agents_traj; 
+    }
 
 protected:
 
@@ -205,9 +210,11 @@ protected:
     int cost(
         ManipLatticeCBSState* HashEntry1,
         ManipLatticeCBSState* HashEntry2,
-        bool bState2IsGoal) const;
+        bool bState2IsGoal,
+        bool is_movable_collision) const;
 
-    bool checkAction(const RobotState& state, const Action& action, const int& t);
+    bool checkAction(const RobotState& state, const Action& action, 
+        const int& t, bool& is_movable_collision);
 
     bool isGoal(const RobotState& state);
 
@@ -245,6 +252,7 @@ private:
     std::vector<moveit_msgs::CollisionObject> m_movables;
     std::unordered_map<int, size_t> m_movables_map;
     std::vector<std::vector<double> > m_constraints;
+    std::vector<std::pair<int, clutter::Trajectory*>> m_movable_agents_traj;
 
     GoalConstraint m_path_constraint;
     bool m_have_path_constraint = false;
@@ -257,8 +265,9 @@ private:
     void startNewSearch();
 
     void initMovablesMap();
-    void updateMovablePose(size_t c_id);
-    bool processMovable(size_t c_id, int idx, bool remove=false);
+    void updateMovablePoseFromConstraint(size_t c_id);
+    void updateMovablePosesFromTraj(const int& timestep);
+    bool processMovable(int mov_id, int idx, bool remove=false);
     bool setMovableMsg(const int& mov_id, bool remove);
     bool processMovableMsg(const int& mov_id, bool remove);
     bool addMovableMsg(const int& mov_id);

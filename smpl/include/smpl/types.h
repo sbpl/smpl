@@ -168,4 +168,29 @@ using Action = std::vector<RobotState>;
 
 } // namespace smpl
 
+namespace clutter
+{
+    typedef std::vector<int> Coord;
+    typedef std::vector<double> State;
+
+    struct LatticeState
+    {
+        Coord coord;
+        State state;
+        int t;
+    };    
+    typedef std::vector<LatticeState> Trajectory;
+    typedef std::vector<LatticeState*> STATES;
+
+    inline
+    bool operator==(const LatticeState& a, const LatticeState& b)
+    {
+        return (
+            a.coord == b.coord &&
+            a.t == b.t
+        );
+    }
+
+} // namespace clutter
+
 #endif

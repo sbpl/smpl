@@ -243,7 +243,9 @@ void ManipLatticeCBS::GetSuccs(
         SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "    action %zu:", i);
         SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      waypoints: %zu", action.size());
 
-        if (!checkAction(parent_entry->state, action, parent_entry->t)) {
+        bool is_movable_collision = false;
+        if (!checkAction(parent_entry->state, action, parent_entry->t,
+                is_movable_collision)) {
             continue;
         }
 
@@ -269,14 +271,15 @@ void ManipLatticeCBS::GetSuccs(
         } else {
             succs->push_back(succ_state_id);
         }
-        costs->push_back(cost(parent_entry, succ_entry, is_goal_succ));
+        costs->push_back(cost(parent_entry, succ_entry, is_goal_succ, is_movable_collision));
 
         // log successor details
         SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      succ: %zu", i);
         SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        id: %5i", succ_state_id);
         SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        coord: " << succ_coord);
         SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        state: " << succ_entry->state);
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        cost: %5d", cost(parent_entry, succ_entry, is_goal_succ));
+        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        cost: %5d", 
+            cost(parent_entry, succ_entry, is_goal_succ, is_movable_collision));
     }
 
     if (goal_succ_count > 0) {
@@ -292,153 +295,156 @@ void ManipLatticeCBS::GetLazySuccs(
     std::vector<int>* costs,
     std::vector<bool>* true_costs)
 {
+    SMPL_ERROR("GetLazySuccs unimplemented");
     // GetLazySuccsStopwatch.start();
     // PROFAUTOSTOP(GetLazySuccsStopwatch);
 
-    assert(state_id >= 0 && state_id < m_states.size());
+    // assert(state_id >= 0 && state_id < m_states.size());
 
-    SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "expand state %d", state_id);
+    // SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "expand state %d", state_id);
 
-    // goal state should be absorbing
-    if (state_id == m_goal_state_id) {
-        return;
-    }
+    // // goal state should be absorbing
+    // if (state_id == m_goal_state_id) {
+    //     return;
+    // }
 
-    ManipLatticeCBSState* state_entry = m_states[state_id];
+    // ManipLatticeCBSState* state_entry = m_states[state_id];
 
-    assert(state_entry);
-    assert(state_entry->coord.size() >= robot()->jointVariableCount());
+    // assert(state_entry);
+    // assert(state_entry->coord.size() >= robot()->jointVariableCount());
 
-    // log expanded state details
-    SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "  coord: " << state_entry->coord);
-    SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "  angles: " << state_entry->state);
+    // // log expanded state details
+    // SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "  coord: " << state_entry->coord);
+    // SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "  angles: " << state_entry->state);
 
-    auto& source_angles = state_entry->state;
-    auto* vis_name = "expansion";
-    SV_SHOW_DEBUG_NAMED(vis_name, getStateVisualization(source_angles, vis_name));
+    // auto& source_angles = state_entry->state;
+    // auto* vis_name = "expansion";
+    // SV_SHOW_DEBUG_NAMED(vis_name, getStateVisualization(source_angles, vis_name));
 
-    std::vector<Action> actions;
-    if (!m_actions->apply(source_angles, actions)) {
-        SMPL_WARN("Failed to get successors");
-        return;
-    }
+    // std::vector<Action> actions;
+    // if (!m_actions->apply(source_angles, actions)) {
+    //     SMPL_WARN("Failed to get successors");
+    //     return;
+    // }
 
-    SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "  actions: %zu", actions.size());
+    // SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "  actions: %zu", actions.size());
 
-    int goal_succ_count = 0;
-    RobotCoord succ_coord(robot()->jointVariableCount());
-    for (size_t i = 0; i < actions.size(); ++i) {
-        auto& action = actions[i];
+    // int goal_succ_count = 0;
+    // RobotCoord succ_coord(robot()->jointVariableCount());
+    // for (size_t i = 0; i < actions.size(); ++i) {
+    //     auto& action = actions[i];
 
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "    action %zu:", i);
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      waypoints: %zu", action.size());
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "    action %zu:", i);
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      waypoints: %zu", action.size());
 
-        stateToCoord(action.back(), succ_coord);
+    //     stateToCoord(action.back(), succ_coord);
 
-        auto succ_is_goal_state = isGoal(action.back());
-        if (succ_is_goal_state) {
-            ++goal_succ_count;
-        }
+    //     auto succ_is_goal_state = isGoal(action.back());
+    //     if (succ_is_goal_state) {
+    //         ++goal_succ_count;
+    //     }
 
-        int succ_state_id = getOrCreateState(succ_coord, action.back(), state_entry->t + 1);
-        ManipLatticeCBSState* succ_entry = getHashEntry(succ_state_id);
+    //     int succ_state_id = getOrCreateState(succ_coord, action.back(), state_entry->t + 1);
+    //     ManipLatticeCBSState* succ_entry = getHashEntry(succ_state_id);
 
-        if (succ_is_goal_state) {
-            succs->push_back(m_goal_state_id);
-        } else {
-            succs->push_back(succ_state_id);
-        }
-        costs->push_back(cost(state_entry, succ_entry, succ_is_goal_state));
-        true_costs->push_back(false);
+    //     if (succ_is_goal_state) {
+    //         succs->push_back(m_goal_state_id);
+    //     } else {
+    //         succs->push_back(succ_state_id);
+    //     }
+    //     costs->push_back(cost(state_entry, succ_entry, succ_is_goal_state));
+    //     true_costs->push_back(false);
 
-        // log successor details
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      succ: %zu", i);
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        id: %5i", succ_state_id);
-        SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        coord: " << succ_coord);
-        SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        state: " << succ_entry->state);
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        cost: %5d", cost(state_entry, succ_entry, succ_is_goal_state));
-    }
+    //     // log successor details
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      succ: %zu", i);
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        id: %5i", succ_state_id);
+    //     SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        coord: " << succ_coord);
+    //     SMPL_DEBUG_STREAM_NAMED(G_EXPANSIONS_LOG, "        state: " << succ_entry->state);
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        cost: %5d", cost(state_entry, succ_entry, succ_is_goal_state));
+    // }
 
-    if (goal_succ_count > 0) {
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "Got %d goal successors!", goal_succ_count);
-    }
+    // if (goal_succ_count > 0) {
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "Got %d goal successors!", goal_succ_count);
+    // }
 }
 
 // Stopwatch GetTrueCostStopwatch("GetTrueCost", 10);
 
 int ManipLatticeCBS::GetTrueCost(int parentID, int childID)
 {
+    SMPL_ERROR("GetTrueCost unimplemented");
+
     // GetTrueCostStopwatch.start();
     // PROFAUTOSTOP(GetTrueCostStopwatch);
 
-    SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "evaluating cost of transition %d -> %d", parentID, childID);
+    // SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "evaluating cost of transition %d -> %d", parentID, childID);
 
-    assert(parentID >= 0 && parentID < (int)m_states.size());
-    assert(childID >= 0 && childID < (int)m_states.size());
+    // assert(parentID >= 0 && parentID < (int)m_states.size());
+    // assert(childID >= 0 && childID < (int)m_states.size());
 
-    ManipLatticeCBSState* parent_entry = m_states[parentID];
-    ManipLatticeCBSState* child_entry = m_states[childID];
-    assert(parent_entry && parent_entry->coord.size() >= robot()->jointVariableCount());
-    assert(child_entry && child_entry->coord.size() >= robot()->jointVariableCount());
+    // ManipLatticeCBSState* parent_entry = m_states[parentID];
+    // ManipLatticeCBSState* child_entry = m_states[childID];
+    // assert(parent_entry && parent_entry->coord.size() >= robot()->jointVariableCount());
+    // assert(child_entry && child_entry->coord.size() >= robot()->jointVariableCount());
 
-    auto& parent_angles = parent_entry->state;
-    auto* vis_name = "expansion";
-    SV_SHOW_DEBUG_NAMED(vis_name, getStateVisualization(parent_angles, vis_name));
+    // auto& parent_angles = parent_entry->state;
+    // auto* vis_name = "expansion";
+    // SV_SHOW_DEBUG_NAMED(vis_name, getStateVisualization(parent_angles, vis_name));
 
-    std::vector<Action> actions;
-    if (!m_actions->apply(parent_angles, actions)) {
-        SMPL_WARN("Failed to get actions");
-        return -1;
-    }
+    // std::vector<Action> actions;
+    // if (!m_actions->apply(parent_angles, actions)) {
+    //     SMPL_WARN("Failed to get actions");
+    //     return -1;
+    // }
 
-    auto goal_edge = (childID == m_goal_state_id);
+    // auto goal_edge = (childID == m_goal_state_id);
 
-    size_t num_actions = 0;
+    // size_t num_actions = 0;
 
-    // check actions for validity and find the valid action with the least cost
-    RobotCoord succ_coord(robot()->jointVariableCount());
-    int best_cost = std::numeric_limits<int>::max();
-    for (size_t aidx = 0; aidx < actions.size(); ++aidx) {
-        auto& action = actions[aidx];
+    // // check actions for validity and find the valid action with the least cost
+    // RobotCoord succ_coord(robot()->jointVariableCount());
+    // int best_cost = std::numeric_limits<int>::max();
+    // for (size_t aidx = 0; aidx < actions.size(); ++aidx) {
+    //     auto& action = actions[aidx];
 
-        stateToCoord(action.back(), succ_coord);
+    //     stateToCoord(action.back(), succ_coord);
 
-        // check whether this action leads to the child state
-        if (goal_edge) {
-            // skip actions which don't end up at a goal state
-            if (!isGoal(action.back())) {
-                continue;
-            }
-        } else {
-            // skip actions which don't end up at the child state
-            if (succ_coord != child_entry->coord) {
-                continue;
-            }
-        }
+    //     // check whether this action leads to the child state
+    //     if (goal_edge) {
+    //         // skip actions which don't end up at a goal state
+    //         if (!isGoal(action.back())) {
+    //             continue;
+    //         }
+    //     } else {
+    //         // skip actions which don't end up at the child state
+    //         if (succ_coord != child_entry->coord) {
+    //             continue;
+    //         }
+    //     }
 
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "    action %zu:", num_actions++);
-        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      waypoints %zu:", action.size());
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "    action %zu:", num_actions++);
+    //     SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "      waypoints %zu:", action.size());
 
-        if (!checkAction(parent_angles, action, parent_entry->t)) {
-            continue;
-        }
+    //     if (!checkAction(parent_angles, action, parent_entry->t)) {
+    //         continue;
+    //     }
 
-        // get the unique state
-        int succ_state_id = goal_edge ? getHashEntry(succ_coord, child_entry->t) : childID;
-        ManipLatticeCBSState* succ_entry = getHashEntry(succ_state_id);
-        assert(succ_entry);
+    //     // get the unique state
+    //     int succ_state_id = goal_edge ? getHashEntry(succ_coord, child_entry->t) : childID;
+    //     ManipLatticeCBSState* succ_entry = getHashEntry(succ_state_id);
+    //     assert(succ_entry);
 
-        auto edge_cost = cost(parent_entry, succ_entry, goal_edge);
-        if (edge_cost < best_cost) {
-            best_cost = edge_cost;
-        }
-    }
+    //     auto edge_cost = cost(parent_entry, succ_entry, goal_edge);
+    //     if (edge_cost < best_cost) {
+    //         best_cost = edge_cost;
+    //     }
+    // }
 
-    if (best_cost != std::numeric_limits<int>::max()) {
-        return best_cost;
-    } else {
-        return -1;
-    }
+    // if (best_cost != std::numeric_limits<int>::max()) {
+    //     return best_cost;
+    // } else {
+    //     return -1;
+    // }
 }
 
 const RobotState& ManipLatticeCBS::extractState(int state_id)
@@ -594,10 +600,12 @@ auto ManipLatticeCBS::computePlanningFrameFK(const RobotState& state) const
 int ManipLatticeCBS::cost(
     ManipLatticeCBSState* HashEntry1,
     ManipLatticeCBSState* HashEntry2,
-    bool bState2IsGoal) const
+    bool bState2IsGoal,
+    bool is_movable_collision) const
 {
     auto DefaultCostMultiplier = 1000;
-    return DefaultCostMultiplier;
+    return DefaultCostMultiplier + 
+        clutter::EECBS_MOVABLE_COLLISION_MULT*is_movable_collision;
 }
 
 static
@@ -613,7 +621,8 @@ bool WithinPathOrientationTolerance(
     return (std::fabs(roll) < tol[0]) && (std::fabs(pitch) < tol[1]) && (std::fabs(yaw) < tol[2]);
 }
 
-bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action, const int& t)
+bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action, 
+    const int& t, bool& is_movable_collision)
 {
     std::uint32_t violation_mask = 0x00000000;
 
@@ -678,9 +687,11 @@ bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action,
                 cc_changed = true;
                 // this constraint is on
                 // 1. update appropriate movable object
-                updateMovablePose(i);
+                updateMovablePoseFromConstraint(i);
                 // 2. add object to collision checker
-                processMovable(i, idx);
+
+                int mov_id = (int)m_constraints[i].at(1);
+                processMovable(mov_id, idx);
                 ++idx;
             }
         }
@@ -699,17 +710,31 @@ bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action,
                 if ((int)m_constraints[i].at(0) == t+1)
                 {
                     // 4. remove object from collision checker
-                    processMovable(i, idx, true);
+                    int mov_id = (int)m_constraints[i].at(1);
+                    processMovable(mov_id, idx, true);
                     ++idx;
                 }
             }
         }
     }
 
+
+
+
     // CBS violation
     if (violation_mask) {
         return false;
     }
+
+    // --------- EECBS Check against all movable objects ---------------------
+    updateMovablePosesFromTraj(t+1);
+    int idx = 0;
+    for(int i = 0; i < m_movable_agents_traj.size(); i++){
+        processMovable(m_movable_agents_traj[i].first, idx);
+        idx++;
+    }
+    is_movable_collision = (!collisionChecker()->isStateValid(action.back()));
+    // --------- EECBS Check against all movable objects ---------------------
 
     // check for collisions along path from parent to first waypoint
     if (!collisionChecker()->isStateToStateValid(state, action[0])) {
@@ -1065,7 +1090,8 @@ bool ManipLatticeCBS::extractPath(
                 }
 
                 // check the validity of this transition
-                if (!checkAction(prev_state, action, prev_entry->t)) {
+                bool is_movable_collision;
+                if (!checkAction(prev_state, action, prev_entry->t, is_movable_collision)) {
                     continue;
                 }
 
@@ -1074,7 +1100,7 @@ bool ManipLatticeCBS::extractPath(
                 ManipLatticeCBSState* succ_entry = getHashEntry(succ_state_id);
                 assert(succ_entry);
 
-                auto edge_cost = cost(prev_entry, succ_entry, true);
+                auto edge_cost = cost(prev_entry, succ_entry, true, is_movable_collision);
                 if (edge_cost < best_cost) {
                     best_cost = edge_cost;
                     best_goal_state = succ_entry;
@@ -1213,7 +1239,7 @@ void ManipLatticeCBS::initMovablesMap()
     }
 }
 
-void ManipLatticeCBS::updateMovablePose(size_t c_id)
+void ManipLatticeCBS::updateMovablePoseFromConstraint(size_t c_id)
 {
     int mov_id = (int)m_constraints[c_id].at(1);
     // Update Moveit pose
@@ -1252,9 +1278,45 @@ void ManipLatticeCBS::updateMovablePose(size_t c_id)
     }
 }
 
-bool ManipLatticeCBS::processMovable(size_t c_id, int idx, bool remove)
+void ManipLatticeCBS::updateMovablePosesFromTraj(const int& timestep)
 {
-    int mov_id = (int)m_constraints[c_id].at(1);
+    /*
+    Updates pose of all the movable objects from their trajectories (given a timestamp)
+    */
+    for(int i = 0; i < m_movable_agents_traj.size(); i++){
+        int agent_id = m_movable_agents_traj[i].first;
+        clutter::LatticeState obj_state;
+        if((*m_movable_agents_traj[i].second).size() <= timestep)
+            obj_state = (*m_movable_agents_traj[i].second).back();
+        else
+            obj_state = (*m_movable_agents_traj[i].second)[timestep];
+
+        geometry_msgs::Pose moveit_pose;
+        moveit_pose.position.x = obj_state.state[0];
+        moveit_pose.position.y = obj_state.state[1];
+        moveit_pose.position.z = obj_state.state[2];
+
+        Eigen::Quaterniond q;
+        geometry_msgs::Quaternion orientation;
+        smpl::angles::from_euler_zyx(obj_state.state[5], obj_state.state[4], 
+            obj_state.state[3], q);
+        orientation.x = q.x();
+        orientation.y = q.y();
+        orientation.z = q.z();
+        orientation.w = q.w();
+
+        if (!m_movables.at(m_movables_map[agent_id]).mesh_poses.empty()) {
+            m_movables.at(m_movables_map[agent_id]).mesh_poses[0] = moveit_pose;
+        }
+        else {
+            m_movables.at(m_movables_map[agent_id]).primitive_poses[0] = moveit_pose;
+        }
+
+    }
+}
+
+bool ManipLatticeCBS::processMovable(int mov_id, int idx, bool remove)
+{
     if (!remove) {
         m_movables.at(m_movables_map[mov_id]).id += "_" + std::to_string(idx);
     }
