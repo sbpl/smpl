@@ -64,6 +64,7 @@ template <class T>
 using AlignedVector = std::vector<T, Eigen::aligned_allocator<T>>;
 
 using Affine3dVector = AlignedVector<Eigen::Affine3d>;
+using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
 
 template <
     class Key,

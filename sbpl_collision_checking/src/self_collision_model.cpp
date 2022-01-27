@@ -170,10 +170,11 @@ void SelfCollisionModel::updateAllowedCollisionMatrix(
             const std::string& entry1 = all_entries[i];
             const std::string& entry2 = all_entries[j];
             if (acm.getEntry(entry1, entry2, type)) {
-                if (type != collision_detection::AllowedCollision::NEVER) {
+                if (type == collision_detection::AllowedCollision::NEVER) {
                     m_acm.setEntry(entry1, entry2, false);
                 }
-                else {
+                else if (type == collision_detection::AllowedCollision::ALWAYS || 
+                         type == collision_detection::AllowedCollision::ALWAYS){
                     m_acm.setEntry(entry1, entry2, true);
                 }
             }
