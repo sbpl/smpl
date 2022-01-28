@@ -185,7 +185,7 @@ public:
         m_movables.insert(m_movables.begin(), movables.begin(), movables.end());
         initMovablesMap();
     }
-    void InitMovableAgentsTraj(const std::vector<std::pair<int, clutter::Trajectory*>>&
+    void InitMovableAgentsTraj(const std::vector<std::pair<int, clutter::Trajectory>>&
         movable_agents_traj) override {
         m_movable_agents_traj = movable_agents_traj; 
     }
@@ -252,7 +252,7 @@ private:
     std::vector<moveit_msgs::CollisionObject> m_movables;
     std::unordered_map<int, size_t> m_movables_map;
     std::vector<std::vector<double> > m_constraints;
-    std::vector<std::pair<int, clutter::Trajectory*>> m_movable_agents_traj;
+    std::vector<std::pair<int, clutter::Trajectory>> m_movable_agents_traj;
 
     GoalConstraint m_path_constraint;
     bool m_have_path_constraint = false;

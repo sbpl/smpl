@@ -107,7 +107,7 @@ public:
         moveit_msgs::MotionPlanResponse& res,
         const std::vector<moveit_msgs::CollisionObject>& movables,
         const std::vector<std::vector<double> >& cvecs,
-        const std::vector<std::pair<int, clutter::Trajectory*> >& movable_agents_traj);
+        const std::vector<std::pair<int, clutter::Trajectory> >& movable_agents_traj);
 
     static
     bool SupportsGoalConstraints(

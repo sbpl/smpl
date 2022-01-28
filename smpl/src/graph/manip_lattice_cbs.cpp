@@ -727,13 +727,15 @@ bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action,
     }
 
     // --------- EECBS Check against all movable objects ---------------------
-    updateMovablePosesFromTraj(t+1);
-    int idx = 0;
-    for(int i = 0; i < m_movable_agents_traj.size(); i++){
-        processMovable(m_movable_agents_traj[i].first, idx);
-        idx++;
-    }
-    is_movable_collision = (!collisionChecker()->isStateValid(action.back()));
+    // updateMovablePosesFromTraj(t+1);
+    // int idx = 0;
+    // for(int i = 0; i < m_movable_agents_traj.size(); i++){
+    //     processMovable(m_movable_agents_traj[i].first, idx);
+    //     idx++;
+    // }
+    // is_movable_collision = (!collisionChecker()->isStateValid(action.back()));
+
+    is_movable_collision = false;
     // --------- EECBS Check against all movable objects ---------------------
 
     // check for collisions along path from parent to first waypoint
@@ -1286,10 +1288,10 @@ void ManipLatticeCBS::updateMovablePosesFromTraj(const int& timestep)
     for(int i = 0; i < m_movable_agents_traj.size(); i++){
         int agent_id = m_movable_agents_traj[i].first;
         clutter::LatticeState obj_state;
-        if((*m_movable_agents_traj[i].second).size() <= timestep)
-            obj_state = (*m_movable_agents_traj[i].second).back();
+        if((m_movable_agents_traj[i].second).size() <= timestep)
+            obj_state = (m_movable_agents_traj[i].second).back();
         else
-            obj_state = (*m_movable_agents_traj[i].second)[timestep];
+            obj_state = (m_movable_agents_traj[i].second)[timestep];
 
         geometry_msgs::Pose moveit_pose;
         moveit_pose.position.x = obj_state.state[0];
