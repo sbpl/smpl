@@ -42,7 +42,7 @@
 
 // system includes
 #include <ros/ros.h>
-#include <moveit/collision_detection/collision_world.h>
+// #include <moveit/collision_detection/collision_world.h>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
 #include <moveit_msgs/CollisionObject.h>

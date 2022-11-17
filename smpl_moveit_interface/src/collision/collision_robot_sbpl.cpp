@@ -101,7 +101,7 @@ CollisionRobotSBPL::CollisionRobotSBPL(
     double padding,
     double scale)
 :
-    CollisionRobot(model, padding, scale)
+    CollisionEnv(model, padding, scale)
 {
     ROS_INFO_NAMED(CRP_LOGGER, "CollisionRobotSBPL(const RobotModelConstPtr&, double, double)");
     ros::NodeHandle ph("~");
@@ -162,7 +162,7 @@ CollisionRobotSBPL::CollisionRobotSBPL(
 }
 
 CollisionRobotSBPL::CollisionRobotSBPL(const CollisionRobotSBPL& other) :
-    CollisionRobot(other)
+    CollisionEnv(other)
 {
     ROS_INFO_NAMED(CRP_LOGGER, "CollisionRobotSBPL(other)");
     m_scm_config = other.m_scm_config;
@@ -189,98 +189,115 @@ auto CollisionRobotSBPL::robotMotionCollisionModel() const
     return m_rmcm;
 }
 
-void CollisionRobotSBPL::checkOtherCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& robot_state,
-    const CollisionRobot& other_robot,
-    const robot_state::RobotState& other_state) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkRobotCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& robot_state,
+//     const robot_state::RobotState& other_robot,
+//     const robot_state::RobotState& other_state) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkOtherCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& robot_state,
-    const CollisionRobot& other_robot,
-    const robot_state::RobotState& other_state,
-    const AllowedCollisionMatrix& acm) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkOtherCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& robot_state,
+//     const CollisionRobot& other_robot,
+//     const robot_state::RobotState& other_state,
+//     const AllowedCollisionMatrix& acm) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkOtherCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state1,
-    const robot_state::RobotState& state2,
-    const CollisionRobot& other_robot,
-    const robot_state::RobotState& other_state1,
-    const robot_state::RobotState& other_state2) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkOtherCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state1,
+//     const robot_state::RobotState& state2,
+//     const CollisionRobot& other_robot,
+//     const robot_state::RobotState& other_state1,
+//     const robot_state::RobotState& other_state2) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkOtherCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state1,
-    const robot_state::RobotState& state2,
-    const CollisionRobot& other_robot,
-    const robot_state::RobotState& other_state1,
-    const robot_state::RobotState& other_state2,
-    const AllowedCollisionMatrix& acm) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkOtherCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state1,
+//     const robot_state::RobotState& state2,
+//     const CollisionRobot& other_robot,
+//     const robot_state::RobotState& other_state1,
+//     const robot_state::RobotState& other_state2,
+//     const AllowedCollisionMatrix& acm) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkSelfCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkSelfCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkSelfCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state,
-    const AllowedCollisionMatrix& acm) const
-{
-    const_cast<CollisionRobotSBPL*>(this)->checkSelfCollisionMutable(
-            req, res, state, acm);
-}
+// void CollisionRobotSBPL::checkSelfCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state,
+//     const AllowedCollisionMatrix& acm) const
+// {
+//     const_cast<CollisionRobotSBPL*>(this)->checkSelfCollisionMutable(
+//             req, res, state, acm);
+// }
 
-void CollisionRobotSBPL::checkSelfCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state1,
-    const robot_state::RobotState& state2) const
-{
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionRobotSBPL::checkSelfCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state1,
+//     const robot_state::RobotState& state2) const
+// {
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionRobotSBPL::checkSelfCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const robot_state::RobotState& state1,
-    const robot_state::RobotState& state2,
-    const AllowedCollisionMatrix& acm) const
-{
-    // TODO: implement
-    const_cast<CollisionRobotSBPL*>(this)->checkSelfCollisionMutable(
-            req, res, state1, state2, acm);
-}
+// void CollisionRobotSBPL::checkSelfCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const robot_state::RobotState& state1,
+//     const robot_state::RobotState& state2,
+//     const AllowedCollisionMatrix& acm) const
+// {
+//     // TODO: implement
+//     const_cast<CollisionRobotSBPL*>(this)->checkSelfCollisionMutable(
+//             req, res, state1, state2, acm);
+// }
+#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_NOETIC
+    
+    void CollisionRobotSBPL::distanceSelf(
+        const DistanceRequest& req, 
+        DistanceResult& res,
+        const moveit::core::RobotState& state) const
+    {
+        assert(0);
+    }
 
-#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_KINETIC
+    void CollisionRobotSBPL::distanceRobot(
+        const DistanceRequest& req, 
+        DistanceResult& res,
+        const moveit::core::RobotState& state) const
+    {
+        assert(0);
+    }
+
+#elif COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_KINETIC
 
 void CollisionRobotSBPL::distanceSelf(
     const collision_detection::DistanceRequest& req,
@@ -341,7 +358,7 @@ double CollisionRobotSBPL::distanceSelf(
 void CollisionRobotSBPL::updatedPaddingOrScaling(
     const std::vector<std::string>& links)
 {
-    CollisionRobot::updatedPaddingOrScaling(links);
+    CollisionEnv::updatedPaddingOrScaling(links);
 }
 
 void CollisionRobotSBPL::setVacuousCollision(CollisionResult& res) const

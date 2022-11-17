@@ -39,7 +39,7 @@
 #include <vector>
 
 // system includes
-#include <moveit/collision_detection/collision_world.h>
+#include <moveit/collision_detection/collision_env.h>
 #include <moveit/distance_field/propagation_distance_field.h>
 #include <moveit_msgs/OrientedBoundingBox.h>
 #include <ros/ros.h>
@@ -60,7 +60,7 @@ SBPL_CLASS_FORWARD(OccupancyGrid);
 
 namespace collision_detection {
 
-class CollisionWorldSBPL : public CollisionWorld
+class CollisionWorldSBPL : public CollisionEnv
 {
 public:
 
@@ -80,54 +80,66 @@ public:
     void checkRobotCollision(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state) const override;
 
     void checkRobotCollision(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state,
         const AllowedCollisionMatrix& acm) const override;
 
     void checkRobotCollision(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state1,
         const robot_state::RobotState& state2) const override;
 
     void checkRobotCollision(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state1,
         const robot_state::RobotState& state2,
         const AllowedCollisionMatrix& acm) const override;
 
-    void checkWorldCollision(
-        const CollisionRequest& req,
-        CollisionResult& res,
-        const CollisionWorld& other_world) const override;
+    // void checkWorldCollision(
+    //     const CollisionRequest& req,
+    //     CollisionResult& res,
+    //     const CollisionWorld& other_world) const override;
 
-    void checkWorldCollision(
-        const CollisionRequest& req,
-        CollisionResult& res,
-        const CollisionWorld& other_world,
+    // void checkWorldCollision(
+    //     const CollisionRequest& req,
+    //     CollisionResult& res,
+    //     const CollisionWorld& other_world,
+    //     const AllowedCollisionMatrix& acm) const override;
+
+    /** \brief Check whether the robot model is in collision with itself or the world at a particular state.
+   *  Allowed collisions specified by the allowed collision matrix are taken into account.
+   *  @param req A CollisionRequest object that encapsulates the collision request
+   *  @param res A CollisionResult object that encapsulates the collision result
+   *  @param state The kinematic state for which checks are being made
+   *  @param acm The allowed collision matrix. */
+    void checkCollision(
+        const CollisionRequest& req, 
+        CollisionResult& res, 
+        const moveit::core::RobotState& state,
         const AllowedCollisionMatrix& acm) const override;
 
-#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_KINETIC
+#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_NOETIC
 
     void distanceRobot(
         const DistanceRequest& req,
         DistanceResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobot& robot,
         const robot_state::RobotState& state) const override;
 
-    void distanceWorld(
-        const DistanceRequest& req,
+    void distanceSelf(
+        const DistanceRequest& req, 
         DistanceResult& res,
-        const CollisionWorld& world) const override;
+        const moveit::core::RobotState& state) const override;
 
 #else // COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_INDIGO
 
@@ -205,27 +217,27 @@ public:
     void checkRobotCollisionMutable(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state);
 
     void checkRobotCollisionMutable(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state,
         const AllowedCollisionMatrix& acm);
 
     void checkRobotCollisionMutable(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state1,
         const robot_state::RobotState& state2);
 
     void checkRobotCollisionMutable(
         const CollisionRequest& req,
         CollisionResult& res,
-        const CollisionRobot& robot,
+        // const CollisionRobotSBPL& robot,
         const robot_state::RobotState& state1,
         const robot_state::RobotState& state2,
         const AllowedCollisionMatrix& acm);

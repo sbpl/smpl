@@ -194,25 +194,25 @@ auto MakeCollisionRobotValidityVisualization(
     return MakeCollisionRobotVisualization(cworld, rcs, abcs, gidx, &color);
 }
 
-CollisionWorldSBPL::CollisionWorldSBPL() : CollisionWorld()
-{
-    ROS_INFO_NAMED(LOG, "CollisionWorldSBPL()");
-    construct();
-}
+// CollisionWorldSBPL::CollisionWorldSBPL() : CollisionEnv()
+// {
+//     ROS_INFO_NAMED(LOG, "CollisionWorldSBPL()");
+//     construct();
+// }
 
-CollisionWorldSBPL::CollisionWorldSBPL(const WorldPtr& world) :
-    CollisionWorld(world)
-{
-    ROS_INFO_NAMED(LOG, "CollisionWorldSBPL(world = %p)", world.get());
-    construct();
-    registerWorldCallback();
-}
+// CollisionWorldSBPL::CollisionWorldSBPL(const WorldPtr& world) :
+//     CollisionEnv(world)
+// {
+//     ROS_INFO_NAMED(LOG, "CollisionWorldSBPL(world = %p)", world.get());
+//     construct();
+//     registerWorldCallback();
+// }
 
 CollisionWorldSBPL::CollisionWorldSBPL(
     const CollisionWorldSBPL& other,
     const WorldPtr& world)
 :
-    CollisionWorld(other, world) // copies over the world
+    CollisionEnv(other, world) // copies over the world
 {
 //    ROS_DEBUG_NAMED(LOG, "CollisionWorldSBPL(other = %p, world = %p)", &other, world.get());
 
@@ -254,88 +254,87 @@ auto CollisionWorldSBPL::distanceField(
 void CollisionWorldSBPL::checkRobotCollision(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobotSBPL& robot,
     const robot_state::RobotState& state) const
 {
     ROS_INFO_NAMED(LOG, "checkRobotCollision(req, res, robot, state)");
 
     const_cast<CollisionWorldSBPL*>(this)->checkRobotCollisionMutable(
-            req, res, robot, state);
+            req, res, state); // robot
 }
 
 void CollisionWorldSBPL::checkRobotCollision(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobotSBPL& robot,
     const robot_state::RobotState& state,
     const AllowedCollisionMatrix& acm) const
 {
     const_cast<CollisionWorldSBPL*>(this)->checkRobotCollisionMutable(
-            req, res, robot, state, acm);
+            req, res, state, acm); // robot
 }
 
 void CollisionWorldSBPL::checkRobotCollision(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobotSBPL& robot,
     const robot_state::RobotState& state1,
     const robot_state::RobotState& state2) const
 {
     ROS_INFO_NAMED(LOG, "checkRobotCollision(req, res, robot, state1, state2)");
 
     const_cast<CollisionWorldSBPL*>(this)->checkRobotCollisionMutable(
-            req, res, robot, state1, state2);
+            req, res, state1, state2); // robot
 }
 
 void CollisionWorldSBPL::checkRobotCollision(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobot& robot,
     const robot_state::RobotState& state1,
     const robot_state::RobotState& state2,
     const AllowedCollisionMatrix& acm) const
 {
     const_cast<CollisionWorldSBPL*>(this)->checkRobotCollisionMutable(
-            req, res, robot, state1, state2, acm);
+            req, res, state1, state2, acm); // robot
 }
 
-void CollisionWorldSBPL::checkWorldCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const CollisionWorld& other_world) const
-{
-    ROS_INFO_NAMED(LOG, "checkWorldCollision(req, res, other_world)");
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionWorldSBPL::checkWorldCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const CollisionWorld& other_world) const
+// {
+//     ROS_INFO_NAMED(LOG, "checkWorldCollision(req, res, other_world)");
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-void CollisionWorldSBPL::checkWorldCollision(
-    const CollisionRequest& req,
-    CollisionResult& res,
-    const CollisionWorld& other_world,
-    const AllowedCollisionMatrix& acm) const
-{
-    ROS_INFO_NAMED(LOG, "checkWorldCollision(req, res, other_world, acm)");
-    // TODO: implement
-    setVacuousCollision(res);
-}
+// void CollisionWorldSBPL::checkWorldCollision(
+//     const CollisionRequest& req,
+//     CollisionResult& res,
+//     const CollisionWorld& other_world,
+//     const AllowedCollisionMatrix& acm) const
+// {
+//     ROS_INFO_NAMED(LOG, "checkWorldCollision(req, res, other_world, acm)");
+//     // TODO: implement
+//     setVacuousCollision(res);
+// }
 
-#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_KINETIC
+#if COLLISION_DETECTION_SBPL_ROS_VERSION == COLLISION_DETECTION_SBPL_ROS_NOETIC
 
 void CollisionWorldSBPL::distanceRobot(
     const collision_detection::DistanceRequest& req,
     collision_detection::DistanceResult& res,
-    const collision_detection::CollisionRobot&,
     const moveit::core::RobotState&) const
 {
     // TODO: implement
     assert(0);
 }
 
-void CollisionWorldSBPL::distanceWorld(
+void CollisionWorldSBPL::distanceSelf(
     const collision_detection::DistanceRequest& req,
     collision_detection::DistanceResult& res,
-    const collision_detection::CollisionWorld&) const
+    const moveit::core::RobotState& state) const
 {
     // TODO: implement
     assert(0);
@@ -389,7 +388,7 @@ void CollisionWorldSBPL::setWorld(const WorldPtr& world)
         curr_world->removeObserver(m_observer_handle);
     }
 
-    CollisionWorld::setWorld(world);
+    CollisionEnv::setWorld(world);
     ROS_INFO_NAMED(LOG, "setWorld(const WorldPtr&)");
 
     registerWorldCallback();
@@ -524,7 +523,7 @@ void CollisionWorldSBPL::setVacuousCollision(CollisionResult& res) const
 void CollisionWorldSBPL::checkRobotCollisionMutable(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobot& robot,
     const robot_state::RobotState& state)
 {
     // TODO: implement
@@ -538,11 +537,11 @@ void CollisionWorldSBPL::checkRobotCollisionMutable(
 void CollisionWorldSBPL::checkRobotCollisionMutable(
     const CollisionRequest& req,
     CollisionResult& res,
-    const CollisionRobot& robot,
+    // const CollisionRobotSBPL& robot,
     const robot_state::RobotState& state,
     const AllowedCollisionMatrix& acm)
 {
-    auto& crobot = (const CollisionRobotSBPL&)robot;
+    auto& crobot = (const CollisionRobotSBPL&) other;
     auto& rcm = crobot.robotCollisionModel();
     if (state.getRobotModel()->getName() != rcm->name()) {
         ROS_ERROR_NAMED(LOG, "Collision Robot Model does not match Robot Model");
