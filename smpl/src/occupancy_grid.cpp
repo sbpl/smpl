@@ -181,7 +181,7 @@ size_t OccupancyGrid::getOccupiedVoxelCount() const
 
 /// Get all occupied voxels within an oriented cube region of the grid.
 void OccupancyGrid::getOccupiedVoxels(
-    const Affine3& pose,
+    const Isometry3& pose,
     const std::vector<double>& dim,
     std::vector<Vector3>& voxels) const
 {

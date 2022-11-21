@@ -26,14 +26,14 @@ auto MakeLineMarker(
     -> Marker;
 
 auto MakeFrameMarkers(
-    const Affine3& pose,
+    const Isometry3& pose,
     const std::string& frame_id,
     const std::string& ns,
     int id = 0)
     -> std::vector<Marker>;
 
 auto MakePoseMarkers(
-    const Affine3& pose,
+    const Isometry3& pose,
     const std::string& frame_id,
     const std::string& ns,
     int id = 0,

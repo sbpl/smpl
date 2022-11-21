@@ -77,8 +77,8 @@ auto GetVariableAcceleration(const RobotState* state, int index) -> double;
 void SetJointPositions(RobotState* state, const Joint* joint, const double* positions);
 void SetJointPositions(RobotState* state, int index, const double* positions);
 
-void SetJointPositions(RobotState* state, const Joint* joint, const Affine3* transform);
-void SetJointPositions(RobotState* state, int index, const Affine3* transform);
+void SetJointPositions(RobotState* state, const Joint* joint, const Isometry3* transform);
+void SetJointPositions(RobotState* state, int index, const Isometry3* transform);
 
 void SetJointVelocities(RobotState* state, const Joint* joint, const double* velocities);
 void SetJointVelocities(RobotState* state, int index, const double* velocities);
@@ -124,21 +124,21 @@ void UpdateVisualBodyTransform(RobotState* state, const LinkVisual* visual);
 void UpdateVisualBodyTransform(RobotState* state, int index);
 
 // Retrieve transforms.
-auto GetLinkTransform(const RobotState* state, const Link* link) -> const Affine3*;
-auto GetLinkTransform(const RobotState* state, int index) -> const Affine3*;
-auto GetCollisionBodyTransform(const RobotState* state, const LinkCollision* collision) -> const Affine3*;
-auto GetCollisionBodyTransform(const RobotState* state, int index) -> const Affine3*;
-auto GetVisualBodyTransform(const RobotState* state, const LinkVisual* visual) -> const Affine3*;
-auto GetVisualBodyTransform(const RobotState* state, int index) -> const Affine3*;
-auto GetJointTransform(const RobotState* state, const Joint* joint) -> const Affine3*;
-auto GetJointTransform(const RobotState* state, int joint) -> const Affine3*;
+auto GetLinkTransform(const RobotState* state, const Link* link) -> const Isometry3*;
+auto GetLinkTransform(const RobotState* state, int index) -> const Isometry3*;
+auto GetCollisionBodyTransform(const RobotState* state, const LinkCollision* collision) -> const Isometry3*;
+auto GetCollisionBodyTransform(const RobotState* state, int index) -> const Isometry3*;
+auto GetVisualBodyTransform(const RobotState* state, const LinkVisual* visual) -> const Isometry3*;
+auto GetVisualBodyTransform(const RobotState* state, int index) -> const Isometry3*;
+auto GetJointTransform(const RobotState* state, const Joint* joint) -> const Isometry3*;
+auto GetJointTransform(const RobotState* state, int joint) -> const Isometry3*;
 
-auto GetUpdatedLinkTransform(RobotState* state, const Link* link) -> const Affine3*;
-auto GetUpdatedLinkTransform(RobotState* state, int index) -> const Affine3*;
-auto GetUpdatedCollisionBodyTransform(RobotState* state, const LinkCollision* collision) -> const Affine3*;
-auto GetUpdatedCollisionBodyTransform(RobotState* state, int index) -> const Affine3*;
-auto GetUpdatedVisualBodyTransform(RobotState* state, const LinkVisual* visual) -> const Affine3*;
-auto GetUpdatedVisualBodyTransform(RobotState* state, int index) -> const Affine3*;
+auto GetUpdatedLinkTransform(RobotState* state, const Link* link) -> const Isometry3*;
+auto GetUpdatedLinkTransform(RobotState* state, int index) -> const Isometry3*;
+auto GetUpdatedCollisionBodyTransform(RobotState* state, const LinkCollision* collision) -> const Isometry3*;
+auto GetUpdatedCollisionBodyTransform(RobotState* state, int index) -> const Isometry3*;
+auto GetUpdatedVisualBodyTransform(RobotState* state, const LinkVisual* visual) -> const Isometry3*;
+auto GetUpdatedVisualBodyTransform(RobotState* state, int index) -> const Isometry3*;
 
 // Query whether the transform for a given entity is outdated.
 bool IsJointTransformDirty(const RobotState* state, const Joint* joint);
@@ -156,11 +156,11 @@ struct RobotState
     double*                 velocities = NULL;
     double*                 accelerations = NULL;
 
-    std::vector<Affine3, Eigen::aligned_allocator<Affine3>>    transforms;
-    Affine3*                link_transforms = NULL;
-    Affine3*                joint_transforms = NULL;
-    Affine3*                link_collision_transforms = NULL;
-    Affine3*                link_visual_transforms = NULL;
+    std::vector<Isometry3, Eigen::aligned_allocator<Isometry3>>    transforms;
+    Isometry3*                link_transforms = NULL;
+    Isometry3*                joint_transforms = NULL;
+    Isometry3*                link_collision_transforms = NULL;
+    Isometry3*                link_visual_transforms = NULL;
 
     const Joint*            dirty_links_joint = NULL;
     const Joint*            dirty_collisions_joint = NULL;

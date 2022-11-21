@@ -857,7 +857,7 @@ bool MoveGroupCommandModel::fillPoseGoalConstraints(
 
     const Eigen::Vector3d target_offset(0.0, 0.0, 0.0);
     auto& T_model_tip = robot_state->getGlobalLinkTransform(tip_link);
-    Eigen::Affine3d T_model_tgtoff = T_model_tip * Eigen::Translation3d(target_offset);
+    Eigen::Isometry3d T_model_tgtoff = T_model_tip * Eigen::Translation3d(target_offset);
     geometry_msgs::Pose tip_link_pose;
     tf::poseEigenToMsg(T_model_tip, tip_link_pose);
 

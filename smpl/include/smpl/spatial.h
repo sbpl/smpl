@@ -56,8 +56,8 @@ using AlignedScaling2 = Eigen::AlignedScaling2d;
 using Rotation2D = Eigen::Rotation2Dd;
 
 using Projective3 = Eigen::Projective3d;
-using Affine3 = Eigen::Affine3d;
-using Affine3Compact = Eigen::AffineCompact3d;
+using Isometry3 = Eigen::Isometry3d;
+using Isometry3Compact = Eigen::AffineCompact3d;
 using Translation3 = Eigen::Translation3d;
 using AlignedScaling3 = Eigen::AlignedScaling3d;
 using AngleAxis = Eigen::AngleAxisd;
@@ -75,15 +75,15 @@ inline auto MakeAffine2(double x, double y, double theta) -> Affine2
     return Affine2(Translation2(x, y) * Rotation2D(theta));
 }
 
-inline auto MakeAffine(double x, double y, double z) -> Affine3
+inline auto MakeAffine(double x, double y, double z) -> Isometry3
 {
-    return Affine3(Translation3(x, y, z));
+    return Isometry3(Translation3(x, y, z));
 }
 
 inline auto MakeAffine(
     double x, double y, double z,
     double Y)
-    -> Affine3
+    -> Isometry3
 {
     return Translation3(x, y, z) * AngleAxis(Y, Vector3::UnitZ());
 }
@@ -91,7 +91,7 @@ inline auto MakeAffine(
 inline auto MakeAffine(
     double x, double y, double z,
     double Y, double P)
-    -> Affine3
+    -> Isometry3
 {
     return Translation3(x, y, z) *
             AngleAxis(Y, Vector3::UnitZ()) *
@@ -101,7 +101,7 @@ inline auto MakeAffine(
 inline auto MakeAffine(
     double x, double y, double z,
     double Y, double P, double R)
-    -> Affine3
+    -> Isometry3
 {
     return Translation3(x, y, z) *
             AngleAxis(Y, Vector3::UnitZ()) *

@@ -221,7 +221,7 @@ public:
             Vector3 ppos = (1.0 - alpha) * pstart + alpha * pend;
             Quaternion prot = qstart.slerp(alpha, qend);
 
-            const Affine3 ptrans = Translation3(ppos) * prot;
+            const Isometry3 ptrans = Translation3(ppos) * prot;
 
             // run inverse kinematics with the previous pose as the seed state
             const RobotState& prev_wp = cpath.back();

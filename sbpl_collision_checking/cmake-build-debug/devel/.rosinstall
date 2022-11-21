@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/itamar/work/code/ros/assembly_ws/src/smpl/sbpl_collision_checking/cmake-build-debug/devel/setup.sh

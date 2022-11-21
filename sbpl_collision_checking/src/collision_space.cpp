@@ -97,7 +97,7 @@ bool CollisionSpace::setJointPosition(
 /// \brief Set the transform from the reference frame to the robot model frame
 /// \param transform The transform from the reference frame to the robot frame
 void CollisionSpace::setWorldToModelTransform(
-    const Eigen::Affine3d& transform)
+    const Eigen::Isometry3d& transform)
 {
     m_rcs->setWorldToModelTransform(transform);
     const int vfidx = m_rcm->jointVarIndexFirst(0);

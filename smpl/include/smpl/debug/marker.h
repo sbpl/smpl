@@ -118,7 +118,7 @@ struct Marker
 
         Pose() : position(), orientation() { }
 
-        Pose(const Affine3& T) :
+        Pose(const Isometry3& T) :
             position(T.translation()),
             orientation(T.rotation())
         { }
@@ -135,7 +135,7 @@ struct Marker
             position(Vector3::Zero()), orientation(orientation)
         { }
 
-        Pose& operator=(const Affine3& T) {
+        Pose& operator=(const Isometry3& T) {
             position = T.translation();
             orientation = T.rotation();
             return *this;

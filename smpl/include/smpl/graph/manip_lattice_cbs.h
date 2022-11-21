@@ -141,7 +141,7 @@ public:
 
     /// \name Required Public Functions from PoseProjectionExtension
     ///@{
-    bool projectToPose(int state_id, Affine3& pos) override;
+    bool projectToPose(int state_id, Isometry3& pos) override;
     ///@}
 
     /// \name Required Public Functions from RobotPlanningSpace
@@ -205,7 +205,7 @@ protected:
     int getOrCreateState(const RobotCoord& coord, const RobotState& state, const int& t);
     int reserveHashEntry();
 
-    Affine3 computePlanningFrameFK(const RobotState& state) const;
+    Isometry3 computePlanningFrameFK(const RobotState& state) const;
 
     int cost(
         ManipLatticeCBSState* HashEntry1,

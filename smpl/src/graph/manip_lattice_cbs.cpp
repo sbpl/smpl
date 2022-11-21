@@ -452,7 +452,7 @@ const RobotState& ManipLatticeCBS::extractState(int state_id)
     return m_states[state_id]->state;
 }
 
-bool ManipLatticeCBS::projectToPose(int state_id, Affine3& pose)
+bool ManipLatticeCBS::projectToPose(int state_id, Isometry3& pose)
 {
     if (state_id == getGoalStateID()) {
         pose = goal().pose;
@@ -589,7 +589,7 @@ int ManipLatticeCBS::reserveHashEntry()
 /// NOTE: const although RobotModel::computeFK used underneath may
 /// not be
 auto ManipLatticeCBS::computePlanningFrameFK(const RobotState& state) const
-    -> Affine3
+    -> Isometry3
 {
     assert(state.size() == robot()->jointVariableCount());
     assert(m_fk_iface);
@@ -610,7 +610,7 @@ int ManipLatticeCBS::cost(
 
 static
 bool WithinPathOrientationTolerance(
-    const Affine3& A,
+    const Isometry3& A,
     const double tol[3])
 {
     double yaw, pitch, roll;
@@ -769,8 +769,8 @@ bool ManipLatticeCBS::checkAction(const RobotState& state, const Action& action,
 
 static
 bool WithinPositionTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     auto dx = std::fabs(A.translation()[0] - B.translation()[0]);
@@ -781,8 +781,8 @@ bool WithinPositionTolerance(
 
 static
 bool WithinOrientationTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     Quaternion qg(B.rotation());
@@ -797,8 +797,8 @@ bool WithinOrientationTolerance(
 
 static
 auto WithinTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double xyz_tolerance[3],
     const double rpy_tolerance[3])
     -> std::pair<bool, bool>
@@ -1401,7 +1401,7 @@ bool ManipLatticeCBS::addMovableMsg(const int& mov_id)
     }
 
     std::vector<collision::CollisionShape*> shapes;
-    collision::AlignedVector<Eigen::Affine3d> shape_poses;
+    collision::AlignedVector<Eigen::Isometry3d> shape_poses;
 
     for (size_t i = 0; i < object.primitives.size(); ++i) {
         auto& prim = object.primitives[i];
@@ -1436,7 +1436,7 @@ bool ManipLatticeCBS::addMovableMsg(const int& mov_id)
         shapes.push_back(collisionChecker()->m_collision_shapes.back().get());
 
         auto& prim_pose = object.primitive_poses[i];
-        Eigen::Affine3d transform = Eigen::Translation3d(prim_pose.position.x,
+        Eigen::Isometry3d transform = Eigen::Translation3d(prim_pose.position.x,
                                         prim_pose.position.y,
                                         prim_pose.position.z) *
                                     Eigen::Quaterniond(prim_pose.orientation.w,
@@ -1456,7 +1456,7 @@ bool ManipLatticeCBS::addMovableMsg(const int& mov_id)
         shapes.push_back(collisionChecker()->m_collision_shapes.back().get());
 
         auto& plane_pose = object.plane_poses[i];
-        Eigen::Affine3d transform = Eigen::Translation3d(plane_pose.position.x,
+        Eigen::Isometry3d transform = Eigen::Translation3d(plane_pose.position.x,
                                         plane_pose.position.y,
                                         plane_pose.position.z) *
                                     Eigen::Quaterniond(plane_pose.orientation.w,
@@ -1473,7 +1473,7 @@ bool ManipLatticeCBS::addMovableMsg(const int& mov_id)
         assert(0); // TODO: implement
 
         auto& mesh_pose = object.mesh_poses[i];
-        Eigen::Affine3d transform = Eigen::Translation3d(mesh_pose.position.x,
+        Eigen::Isometry3d transform = Eigen::Translation3d(mesh_pose.position.x,
                                         mesh_pose.position.y,
                                         mesh_pose.position.z) *
                                     Eigen::Quaterniond(mesh_pose.orientation.w,

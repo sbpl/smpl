@@ -20,7 +20,7 @@ auto MakeSphereMarker(
     int id) -> Marker
 {
     visual::Marker m;
-    m.pose = Affine3(Translation3(x, y, z));
+    m.pose = Isometry3(Translation3(x, y, z));
     m.shape = Sphere{ radius };
     m.color = MakeColorHSV(hue);
     m.frame_id = frame_id;
@@ -39,7 +39,7 @@ auto MakeLineMarker(
     -> Marker
 {
     Marker m;
-    m.pose = Affine3::Identity();
+    m.pose = Isometry3::Identity();
     m.shape = LineList{ { a, b } };
     m.color = Color{ 1.0f, 1.0f, 1.0f, 1.0f };
     m.frame_id = frame_id;
@@ -50,7 +50,7 @@ auto MakeLineMarker(
 }
 
 auto MakeFrameMarkers(
-    const Affine3& pose,
+    const Isometry3& pose,
     const std::string& frame_id,
     const std::string& ns,
     int id)
@@ -86,7 +86,7 @@ auto MakeFrameMarkers(
 }
 
 auto MakePoseMarkers(
-    const Affine3& pose,
+    const Isometry3& pose,
     const std::string& frame_id,
     const std::string& ns,
     int id,
@@ -121,7 +121,7 @@ auto MakeCubesMarker(
     int id) -> Marker
 {
     visual::Marker marker;
-    marker.pose = Affine3::Identity();
+    marker.pose = Isometry3::Identity();
     marker.shape = CubeList{ centers, size };
     marker.color = color;
     marker.frame_id = frame_id;
@@ -139,7 +139,7 @@ auto MakeCubesMarker(
     int id) -> Marker
 {
     visual::Marker marker;
-    marker.pose = Affine3::Identity();
+    marker.pose = Isometry3::Identity();
     marker.shape = CubeList{ centers, size };
     marker.color = Colors{ colors };
     marker.frame_id = frame_id;
@@ -157,7 +157,7 @@ auto MakeCubesMarker(
     int id) -> Marker
 {
     visual::Marker marker;
-    marker.pose = Affine3::Identity();
+    marker.pose = Isometry3::Identity();
     marker.shape = CubeList{ std::move(centers), size };
     marker.color = color;
     marker.frame_id = frame_id;
@@ -175,7 +175,7 @@ auto MakeCubesMarker(
     int id) -> Marker
 {
     visual::Marker marker;
-    marker.pose = Affine3::Identity();
+    marker.pose = Isometry3::Identity();
     marker.shape = CubeList{ std::move(centers), size };
     marker.color = Colors{ std::move(colors) };
     marker.frame_id = frame_id;

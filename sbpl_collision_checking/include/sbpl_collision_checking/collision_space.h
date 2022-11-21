@@ -91,7 +91,7 @@ public:
     /// \name Robot State
     ///@{
     bool setJointPosition(const std::string& name, double position);
-    void setWorldToModelTransform(const Eigen::Affine3d& transform);
+    void setWorldToModelTransform(const Eigen::Isometry3d& transform);
     ///@}
 
     void setPadding(double padding);

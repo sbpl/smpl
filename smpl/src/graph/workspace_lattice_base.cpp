@@ -183,7 +183,7 @@ bool WorkspaceLatticeBase::stateWorkspaceToRobot(
         seed[m_fangle_indices[fai]] = state[6 + fai];
     }
 
-    Affine3 pose =
+    Isometry3 pose =
             Translation3(state[0], state[1], state[2]) *
             AngleAxis(state[5], Vector3::UnitZ()) *
             AngleAxis(state[4], Vector3::UnitY()) *
@@ -224,7 +224,7 @@ bool WorkspaceLatticeBase::stateWorkspaceToRobot(
     const RobotState& seed,
     RobotState& ostate) const
 {
-    Affine3 pose =
+    Isometry3 pose =
             Translation3(state[0], state[1], state[2]) *
             AngleAxis(state[5], Vector3::UnitZ()) *
             AngleAxis(state[4], Vector3::UnitY()) *

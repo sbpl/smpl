@@ -82,7 +82,7 @@ template <typename Discretizer>
 static void ScanFill(VoxelGrid<Discretizer>& vg);
 
 static void TransformVertices(
-    const Affine3& transform,
+    const Isometry3& transform,
     std::vector<Vector3>& vertices);
 
 static double Distance(const Vector3& n, double d, const Vector3& x);
@@ -309,7 +309,7 @@ void ScanFill(VoxelGrid<Discretizer>& vg)
 }
 
 void TransformVertices(
-    const Affine3& transform,
+    const Isometry3& transform,
     std::vector<Vector3>& vertices)
 {
     for (std::size_t i = 0; i < vertices.size(); i++) {
@@ -394,7 +394,7 @@ void VoxelizeBox(
     double length,
     double width,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill)
@@ -425,7 +425,7 @@ void VoxelizeBox(
     double length,
     double width,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -459,7 +459,7 @@ void VoxelizeSphere(
 /// Output voxels are appended to the input voxel vector.
 void VoxelizeSphere(
     double radius,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill)
@@ -496,7 +496,7 @@ void VoxelizeSphere(
 /// Output voxels are appended to the input voxel vector.
 void VoxelizeSphere(
     double radius,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -533,7 +533,7 @@ void VoxelizeCylinder(
 void VoxelizeCylinder(
     double radius,
     double length,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill)
@@ -572,7 +572,7 @@ void VoxelizeCylinder(
 void VoxelizeCylinder(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -608,7 +608,7 @@ void VoxelizeCone(
 void VoxelizeCone(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill)
@@ -645,7 +645,7 @@ void VoxelizeCone(
 void VoxelizeCone(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -694,7 +694,7 @@ void VoxelizeMesh(
 void VoxelizeMesh(
     const std::vector<Vector3>& vertices,
     const std::vector<std::uint32_t>& triangles,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill)
@@ -740,7 +740,7 @@ void VoxelizeMesh(
 void VoxelizeMesh(
     const std::vector<Vector3>& vertices,
     const std::vector<std::uint32_t>& indices,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -793,7 +793,7 @@ void VoxelizePlane(
 /// \param[out] volume The combined volume of all the spheres
 void VoxelizeSphereList(
     const std::vector<double>& radii,
-    const std::vector<Affine3>& poses,
+    const std::vector<Isometry3>& poses,
     double res,
     std::vector<Vector3>& voxels,
     double& volume,
@@ -852,7 +852,7 @@ void VoxelizeSphereList(
 /// \param[out] volume The combined volume of all the spheres
 void VoxelizeSphereListQAD(
     const std::vector<double>& spheres,
-    const std::vector<Affine3>& poses,
+    const std::vector<Isometry3>& poses,
     double res,
     std::vector<Vector3>& voxels,
     double& volume,

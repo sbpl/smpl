@@ -52,7 +52,7 @@ void VoxelizeBox(
     double length,
     double width,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill = false);
@@ -70,7 +70,7 @@ void VoxelizeBox(
     double length,
     double width,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -84,7 +84,7 @@ void VoxelizeSphere(
 
 void VoxelizeSphere(
     double radius,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill = false);
@@ -98,7 +98,7 @@ void VoxelizeSphere(
 
 void VoxelizeSphere(
     double radius,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -114,7 +114,7 @@ void VoxelizeCylinder(
 void VoxelizeCylinder(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill = false);
@@ -130,7 +130,7 @@ void VoxelizeCylinder(
 void VoxelizeCylinder(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -146,7 +146,7 @@ void VoxelizeCone(
 void VoxelizeCone(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill = false);
@@ -162,7 +162,7 @@ void VoxelizeCone(
 void VoxelizeCone(
     double radius,
     double height,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -178,7 +178,7 @@ void VoxelizeMesh(
 void VoxelizeMesh(
     const std::vector<Vector3>& vertices,
     const std::vector<std::uint32_t>& indices,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     std::vector<Vector3>& voxels,
     bool fill = false);
@@ -194,7 +194,7 @@ void VoxelizeMesh(
 void VoxelizeMesh(
     const std::vector<Vector3>& vertices,
     const std::vector<std::uint32_t>& indices,
-    const Affine3& pose,
+    const Isometry3& pose,
     double res,
     const Vector3& voxel_origin,
     std::vector<Vector3>& voxels,
@@ -217,7 +217,7 @@ void VoxelizePlane(
 
 void VoxelizeSphereList(
     const std::vector<double>& radii,
-    const std::vector<Affine3>& poses,
+    const std::vector<Isometry3>& poses,
     double res,
     std::vector<Vector3>& voxels,
     double& volume,
@@ -226,7 +226,7 @@ void VoxelizeSphereList(
 
 void VoxelizeSphereListQAD(
     const std::vector<double>& radii,
-    const std::vector<Affine3>& poses,
+    const std::vector<Isometry3>& poses,
     double res,
     std::vector<Vector3>& voxels,
     double& volume,

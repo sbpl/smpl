@@ -443,7 +443,7 @@ const RobotState& ManipLattice::extractState(int state_id)
     return m_states[state_id]->state;
 }
 
-bool ManipLattice::projectToPose(int state_id, Affine3& pose)
+bool ManipLattice::projectToPose(int state_id, Isometry3& pose)
 {
     if (state_id == getGoalStateID()) {
         pose = goal().pose;
@@ -578,7 +578,7 @@ int ManipLattice::reserveHashEntry()
 /// NOTE: const although RobotModel::computeFK used underneath may
 /// not be
 auto ManipLattice::computePlanningFrameFK(const RobotState& state) const
-    -> Affine3
+    -> Isometry3
 {
     assert(state.size() == robot()->jointVariableCount());
     assert(m_fk_iface);
@@ -597,7 +597,7 @@ int ManipLattice::cost(
 
 static
 bool WithinPathOrientationTolerance(
-    const Affine3& A,
+    const Isometry3& A,
     const double tol[3])
 {
     double yaw, pitch, roll;
@@ -689,8 +689,8 @@ bool ManipLattice::checkAction(const RobotState& state, const Action& action)
 
 static
 bool WithinPositionTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     auto dx = std::fabs(A.translation()[0] - B.translation()[0]);
@@ -701,8 +701,8 @@ bool WithinPositionTolerance(
 
 static
 bool WithinOrientationTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     Quaternion qg(B.rotation());
@@ -717,8 +717,8 @@ bool WithinOrientationTolerance(
 
 static
 auto WithinTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double xyz_tolerance[3],
     const double rpy_tolerance[3])
     -> std::pair<bool, bool>

@@ -179,7 +179,7 @@ public:
 
     bool projectToPoint(int state_id, Vector3& pos) override
     {
-        Affine3 pose;
+        Isometry3 pose;
         if (!projectToPose(state_id, pose)) {
             return false;
         }
@@ -187,7 +187,7 @@ public:
         return true;
     }
 
-    virtual bool projectToPose(int state_id, Affine3& pose) = 0;
+    virtual bool projectToPose(int state_id, Isometry3& pose) = 0;
 };
 
 class ExtractRobotStateExtension : public virtual Extension

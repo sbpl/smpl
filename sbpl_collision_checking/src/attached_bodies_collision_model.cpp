@@ -335,7 +335,7 @@ bool AttachedBodiesCollisionModel::voxelizeAttachedBody(
     std::vector<Eigen::Vector3d> voxels;
     for (size_t i = 0; i < shapes.size(); ++i) {
         const shapes::Shape& shape = *shapes[i];
-        const Eigen::Affine3d& transform = transforms[i];
+        const Eigen::Isometry3d& transform = transforms[i];
         VoxelizeShape(
                 shape, transform,
                 model.voxel_res, Eigen::Vector3d::Zero(), model.voxels);

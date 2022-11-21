@@ -18,7 +18,7 @@ namespace collision {
 
 template <class T>
 using AlignedVector = std::vector<T, Eigen::aligned_allocator<T>>;
-using Affine3dVector = AlignedVector<Eigen::Affine3d>;
+using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
 
 enum class ShapeType
 {
@@ -123,7 +123,7 @@ struct OcTreeShape : public CollisionShape {
 struct CollisionObject {
     std::string id;
     std::vector<CollisionShape*> shapes;
-    AlignedVector<Eigen::Affine3d> shape_poses;
+    AlignedVector<Eigen::Isometry3d> shape_poses;
 };
 
 /// Helper struct to represent geometry attached to a robot link. Bundles
@@ -132,7 +132,7 @@ struct CollisionObject {
 struct CollisionGeometry {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     const CollisionShape* shape;
-    Eigen::Affine3d offset;
+    Eigen::Isometry3d offset;
 };
 
 /// Another helper struct to store all collision geometry attached to a robot

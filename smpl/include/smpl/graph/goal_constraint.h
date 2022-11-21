@@ -35,9 +35,9 @@ struct GoalConstraint
     std::vector<double> angle_tolerances;
 
     // Relevant for workspace goals
-    Affine3 pose;               // goal pose of the planning link
+    Isometry3 pose;               // goal pose of the planning link
 
-    std::vector<Affine3, Eigen::aligned_allocator<Affine3>> poses;
+    std::vector<Isometry3, Eigen::aligned_allocator<Isometry3>> poses;
 
     double xyz_tolerance[3];            // (x, y, z) tolerance
     double rpy_tolerance[3];            // (R, P, Y) tolerance
