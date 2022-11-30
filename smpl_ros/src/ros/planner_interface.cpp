@@ -706,7 +706,6 @@ bool PlannerInterface::solve(
     bool passthrough)
 {
     ClearMotionPlanResponse(req, res);
-
     if (!m_initialized) {
         res.error_code.val = moveit_msgs::MoveItErrorCodes::FAILURE;
         return false;
@@ -757,12 +756,16 @@ bool PlannerInterface::solve(
         }
     }
     else {
-        m_pspace->disablePathConstraints();
+        SMPL_INFO("disablePathConstraints");
+//        m_pspace->disablePathConstraints();
     }
 
+
     if (passthrough) {
+        ROS_INFO("Pass through");
         return run_solve(req, res);
     }
+    return false;
 }
 
 bool PlannerInterface::run_solve(

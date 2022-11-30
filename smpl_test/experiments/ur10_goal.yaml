@@ -1,0 +1,34 @@
+initial_configuration:
+  joint_state:
+    - { name: shoulder_pan_joint,       position: 0.0 }
+    - { name: shoulder_lift_joint,   position: 0.0} #-1.5447 }
+    - { name: elbow_joint,  position: 0.0} #1.5447 }
+    - { name: wrist_1_joint, position: 0.0} #-1.5794 }
+    - { name: wrist_2_joint,     position: 0.0} #-1.5794 } #-0.2 }
+    - { name: wrist_3_joint,   position: 0.0 }
+
+#  multi_dof_joint_state:
+#    - frame_id: map
+#      child_frame_id: torso_lift_link
+#      x: -0.05
+#      y: 1.0
+#      z: 0.789675
+#      roll: 0.0
+#      pitch: 0.0
+#      yaw: 0.0
+#    - frame_id: base_footprint
+#      child_frame_id: torso_lift_link
+#      x: -0.05
+#      y: 0.0
+#      z: 0.789675
+#      roll: 0.0
+#      pitch: 0.0
+#      yaw: 0.0
+
+goal:
+  x: 0.2
+  y: -0.2
+  z: 0.36
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.0
