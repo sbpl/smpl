@@ -65,6 +65,7 @@ using AlignedVector = std::vector<T, Eigen::aligned_allocator<T>>;
 
 using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
 using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
+// Why twice?
 
 template <
     class Key,

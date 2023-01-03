@@ -1,10 +1,10 @@
 initial_configuration:
   joint_state:
     - { name: shoulder_pan_joint,       position: 0.0 }
-    - { name: shoulder_lift_joint,   position: 0.0} #-1.5447 }
-    - { name: elbow_joint,  position: 0.0} #1.5447 }
-    - { name: wrist_1_joint, position: 0.0} #-1.5794 }
-    - { name: wrist_2_joint,     position: 0.0} #-1.5794 } #-0.2 }
+    - { name: shoulder_lift_joint,   position: -1.5447 }
+    - { name: elbow_joint,  position:  1.5447} # 0.0
+    - { name: wrist_1_joint, position: -1.5794} # 0.0
+    - { name: wrist_2_joint,     position: -1.5794} #0.0
     - { name: wrist_3_joint,   position: 0.0 }
 
 #  multi_dof_joint_state:
@@ -26,9 +26,20 @@ initial_configuration:
 #      yaw: 0.0
 
 goal:
-  x: 0.2
-  y: -0.2
-  z: 0.36
-  roll: 0.0
-  pitch: 0.0
-  yaw: 0.0
+  x: 0.5
+  y: -0.5
+  z: 0.6
+
+#  roll: 0.0
+#  pitch: 0.0
+#  yaw: 0.0
+
+# Facing Upwards
+#  roll: 0.0
+#  pitch: -1.56219
+#  yaw: -3.14189142
+
+# Facing Downwards
+  roll: 2.35624259
+  pitch: 1.55862862
+  yaw: -0.78538709

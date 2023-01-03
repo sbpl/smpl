@@ -223,7 +223,30 @@ bool SelfCollisionModel::checkCollision(
     {
         return false;
     }
-
+//    if (!checkRobotSpheresStateCollisions(dist))
+//    {
+//        ROS_INFO("Robot sphere collision");
+//        return false;
+//    }
+//    else if (!checkAttachedBodySpheresStateCollisions(dist))
+//    {
+//        ROS_INFO("Attached body sphere collision");
+//        return false;
+//    }
+//    else if (!checkRobotVoxelsStateCollisions(dist))
+//    {
+//        ROS_INFO("Robot voxel collision");
+//        return false;
+//    }
+//    else if (!checkAttachedBodyVoxelsStateCollisions(dist))
+//    {
+//        ROS_INFO("Attached body voxel collision");
+//        return false;
+//    }
+//    else
+//    {
+//        return true;
+//    }
     return true;
 }
 
@@ -242,12 +265,35 @@ bool SelfCollisionModel::checkCollision(
 
     if (!checkRobotVoxelsStateCollisions(dist) ||
         !checkAttachedBodyVoxelsStateCollisions(dist) ||
-        !checkRobotSpheresStateCollisions(aci, dist) ||
-        !checkAttachedBodySpheresStateCollisions(aci, dist))
+        !checkRobotSpheresStateCollisions(dist) ||
+        !checkAttachedBodySpheresStateCollisions(dist))
     {
         return false;
     }
-
+//    if (!checkRobotSpheresStateCollisions(dist))
+//    {
+//        ROS_INFO("Robot sphere collision");
+//        return false;
+//    }
+//    else if (!checkAttachedBodySpheresStateCollisions(dist))
+//    {
+//        ROS_INFO("Attached body sphere collision");
+//        return false;
+//    }
+//    else if (!checkRobotVoxelsStateCollisions(dist))
+//    {
+//        ROS_INFO("Robot voxel collision");
+//        return false;
+//    }
+//    else if (!checkAttachedBodyVoxelsStateCollisions(dist))
+//    {
+//        ROS_INFO("Attached body voxel collision");
+//        return false;
+//    }
+//    else
+//    {
+//        return true;
+//    }
     return true;
 }
 

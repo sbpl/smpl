@@ -107,10 +107,12 @@ bool LoadConfigArray(
     for (int i = 0; i < all_configs.size(); ++i) {
         XmlRpc::XmlRpcValue& config = all_configs[i];
         T collision_config;
+//        std::cout << typeid(T).name() << std::endl;
         if (!T::Load(config, collision_config)) {
             ROS_ERROR("Failed to load collision sphere config");
             return false;
         }
+        std::cout << collision_config << std::endl;
         out.push_back(std::move(collision_config));
     }
 

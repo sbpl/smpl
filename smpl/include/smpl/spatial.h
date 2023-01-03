@@ -6,10 +6,10 @@
 
 namespace smpl {
 
-// Aliases for the most commonly used types from within Eigen to support brevity
-// and, optimistically, ease a possible transition to optional compilation using
-// 32-bit floating-point across the board rather than templating the entire
-// library
+///@namespace Aliases for the most commonly used types from within Eigen to support brevity
+/// and, optimistically, ease a possible transition to optional compilation using
+/// 32-bit floating-point across the board rather than templating the entire
+/// library
 
 //////////////////
 // Matrix Types //
