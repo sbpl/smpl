@@ -27,8 +27,12 @@ initial_configuration:
 
 goal:
   x: 0.5
-  y: -0.5
-  z: 0.6
+  y: -0.4
+  z: 0.5
+  # Facing Downwards
+  roll: 3.14159265359
+  pitch: 1.57087
+  yaw: 0.0
 
 #  roll: 0.0
 #  pitch: 0.0
@@ -36,10 +40,7 @@ goal:
 
 # Facing Upwards
 #  roll: 0.0
-#  pitch: -1.56219
 #  yaw: -3.14189142
+#  pitch: -1.56219
 
-# Facing Downwards
-  roll: 2.35624259
-  pitch: 1.55862862
-  yaw: -0.78538709
+

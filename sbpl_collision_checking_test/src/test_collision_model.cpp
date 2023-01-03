@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
     shapes.push_back(std::move(ao_shape));
     transforms.push_back(Eigen::Isometry3d::Identity());
 
-    const std::string attach_link = "flange";
+    const std::string attach_link = "tool0";
     const std::string attached_body_id = "ao1";
     if (!ab_model.attachBody(attached_body_id, shapes, transforms, attach_link)) {
         ROS_ERROR("Failed to attach body to '%s'", attach_link.c_str());
