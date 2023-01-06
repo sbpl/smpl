@@ -130,8 +130,8 @@ robot_collision_model:
         - name: forearm_link
         - name: wrist_1_link
         - name: wrist_2_link
-#        - name: wrist_3_link
-#        - name: flange
+        - name: wrist_3_link
+        - name: flange
 #allowed_collisions:
 #  - { sphere1: sh0, sphere2: ua0 }
 #  - { sphere1: sh1, sphere2: ua0 }
