@@ -27,7 +27,7 @@ initial_configuration:
 
 goal:
   x: 0.5
-  y: 0.05
+  y: 0.3
   z: 0.40
 #  x: 0.5
 #  y: -0.4

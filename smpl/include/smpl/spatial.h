@@ -11,6 +11,7 @@ namespace smpl {
 /// 32-bit floating-point across the board rather than templating the entire
 /// library
 
+
 //////////////////
 // Matrix Types //
 //////////////////
