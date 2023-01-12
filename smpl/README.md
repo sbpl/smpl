@@ -14,7 +14,7 @@
 ### Header-only files:
 
 ---
-* [`smpl/types.h`](docs/types.md) - Defines types used throughout the library.
+* [`smpl/types.h`](docs/types.md) - Define types used throughout the library.
 ##### Namespace: `smpl` 
 In this header file, there are few **hash** structs and **operators** overloading.
 For example, the `PointerValueHash` helper struct to compute a hash value for a pointer using the hash value of the object it points to. 
@@ -39,11 +39,13 @@ Additionally, there are two useful functions:
 * `to_secondes` - converts a `Duration` to seconds.
 * `to_duration` - converts a `double` to a `Duration`.
 
+---
 * [`smpl/angles.h`](docs/angles.md) - functions for working with angles.
 ##### Namespace: `smpl::angles`
 Here, we have a bunch of utilities such as `to_degrees`, `to_radians`, `shortest_angle_diff`, `get_euler_zyx`, `get_nearest_planar_rotation`
 and many many more.
 
+---
 * [`smpl/spatial.h`](docs/spatial.md) - functions for working with spatial transformations.
 ##### Namespace: `smpl`
 
@@ -57,6 +59,7 @@ Additionally, we have functions for making these types from coordinates - `make_
 **IMPORTANT NOTE**: If you are using ubuntu distribution less than 20.04 (18.04), then you work with *Affines*. Otherwise, 
 you are using *Isometries* - even though the function called "make_Affine" they return Isometry object.
 
+---
 * [`smpl/shapes.h`](docs/shapes.md) - working with shapes for collision checker and more.
 ##### Namespace: `smpl::collision`
 
