@@ -67,12 +67,13 @@ you are using *Isometries* - even though the function called "make_Affine" they 
 
 Here, we have shape data structures. 
 
+---
 * [`smpl/extension.h`](docs/extension.md) - // TODO.
 
 ### With source files:
 
 ---
-* [`smpl/robot_model.h`](docs/robot_model.md) - defines the interface for a robot model.
+* [`robot_model`](docs/robot_model.md) - defines the interface for a robot model.
 ##### Namespace: `smpl`
 
 Here we have 5 key classes:
@@ -82,5 +83,51 @@ Here we have 5 key classes:
 4. `RedundantManipulatorInterface`: RobotModel extension for redundancy utils 
 5. `RobotModelChild`: Convenience class allowing a component to implement all root interface methods via an existing extension 
 
+---
+* [`post_processing`](docs/post_processing.md) - Package for post-processing motion plans such as *shortcutting paths*, 
+*interpolating paths*, *extracting position paths* and more.
+##### Namespace: `smpl`
 
+---
+* [`planning_params`]() - Parameters wrapper for planning algorithms.
+##### Namespace: `smpl`
 
+Two main structures:
+* `PlanningParams`: class for storing planning parameters and methods for adding, getting and checking for params
+* `ParameterException`: exception struct for parameter errors
+
+---
+* [`occupancy_grid`](docs/occupancy_grid.md) - Occupancy grid representation. 
+Lightweight wrapper around [DistanceMapInterface](ADD!!!) (explained later) with some additions
+##### Namespace: `smpl`
+
+The first additional feature is the presence of a reference frame id that is attached to the distance map. The reference 
+frame is used **solely for preparing visualizations** and does there are no active transformations managed by this class. 
+The second additional feature is cell reference counting. Each cell may count the number of times it has been inserted 
+into the distance map. Only when a cell has been removed the same number of times it has been inserted, 
+will it be removed from the distance map. The cell is only actually inserted once into the distance map, regardless of 
+the number of consecutive insertions into the occupancy grid. If cell reference counting is enabled with a distance 
+field passed to the OccupancyGrid on construction, the caller must not directly modify the distance map. 
+This may corrupt the invariant that the obstacle exists in the distance map if its reference count is non-zero. 
+An arbitrary distance map implementation may be used with this class. If none is specified, by calling the verbose 
+constructor, an instance of `smpl::EuclidDistanceMap` is constructed.
+
+### TODO
+
+---
+* [`constants`]() - Declaring constants for the library. 
+##### Namespace: `clutter` 
+
+There are simple constants such as _bools_ and _integers_. Additionally, there are more consts such as
+**YCB_OBJECTS** , their names. their dims and more.
+
+---
+* [`collision_checker`](docs/collision_checker.md) - Collision checker interface.
+##### Namespace: `smpl`
+
+Classes:
+* `CollisionChecker`: **Abstract** class for collision checking. Contain methods for 
+checking validity of states, interpolations, getting collision models, inserting collision objects and more.
+(Mostly all are _virtual_)
+
+* `CollisionDistanceExtension` - Interface for collision distance queries.
