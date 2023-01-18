@@ -5,7 +5,7 @@ initial_configuration:
     - { name: elbow_joint,  position:  1.5447} # 0.0
     - { name: wrist_1_joint, position: -1.5794}
     - { name: wrist_2_joint,     position: -1.5794}
-    - { name: wrist_3_joint,   position: 0.0 } # 0.0s
+    - { name: wrist_3_joint,   position: 3.1459 } # 0.0s
 
 #  multi_dof_joint_state:
 #    - frame_id: map
@@ -26,9 +26,12 @@ initial_configuration:
 #      yaw: 0.0
 
 goal:
-  x: 0.5
-  y: 0.3
-  z: 0.40
+  x: 0.42
+  y: 0.4
+  z: 0.25
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.2
 #  x: 0.5
 #  y: -0.4
 #  z: 0.5
@@ -37,9 +40,7 @@ goal:
 #  pitch: 0.0
 #  yaw: 0.0
 
-  roll: 0.0
-  pitch: 0.0
-  yaw: 0.0
+
 
 # Facing Upwards
 #  roll: 0.0

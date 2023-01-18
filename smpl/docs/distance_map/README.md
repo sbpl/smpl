@@ -57,3 +57,35 @@ From this class (`DistanceMap`), we have the following derived classes, which im
 * [`euclid_distance_map.h`](../../include/smpl/distance_map/euclid_distance_map.h) - `EuclidDistanceMap`
 * [`edge_euclid_distance_map.h`](../../include/smpl/distance_map/edge_euclid_distance_map.h) - `EdgeEuclidDistanceMap`
 * [`chessboard_distance_map.h`](../../include/smpl/distance_map/chessboard_distance_map.h) - `ChessboardDistanceMap`
+
+---
+
+## Usage:
+
+Defining a distance map:
+```cpp
+auto df_size_x = 3.0;
+auto df_size_y = 3.0;
+auto df_size_z = 3.0;
+auto df_res = 0.02;
+auto df_origin_x = -0.75;
+auto df_origin_y = -1.5;
+auto df_origin_z = 0.0;
+auto max_distance = 1.8;
+
+using DistanceMapType = smpl::EuclidDistanceMap;
+
+auto df = std::make_shared<DistanceMapType>(
+      df_origin_x, df_origin_y, df_origin_z,
+      df_size_x, df_size_y, df_size_z,
+      df_res,
+      max_distance);
+```
+Now, we can use it for constructing an OccupancyGrid:
+```cpp
+auto ref_counted = false;
+smpl::OccupancyGrid grid(df, ref_counted);
+
+grid.setReferenceFrame(planning_frame);
+SV_SHOW_INFO(grid.getBoundingBoxVisualization());
+```

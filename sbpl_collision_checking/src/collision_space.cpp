@@ -557,7 +557,6 @@ bool CollisionSpace::init(
     const std::vector<std::string>& planning_joints)
 {
     ROS_DEBUG_NAMED(LOG, "Initializing collision space for group '%s'", group_name.c_str());
-    ROS_INFO_STREAM("INIT2");
     auto rcm = RobotCollisionModel::Load(urdf, config);
     return init(grid, rcm, group_name, planning_joints);
 }
@@ -573,7 +572,6 @@ bool CollisionSpace::init(
     const std::string& group_name,
     const std::vector<std::string>& planning_joints)
 {
-    ROS_INFO_STREAM("INIT3");
     m_grid = grid;
     m_rcm = rcm;
     if (!m_rcm) {
