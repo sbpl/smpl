@@ -37,6 +37,7 @@
 
 // system includes
 #include <sbpl/discrete_space_information/environment.h>
+#include <moveit_msgs/CollisionObject.h>
 
 // project includes
 #include <smpl/collision_checker.h>
@@ -47,6 +48,7 @@
 #include <smpl/spatial.h>
 #include <smpl/types.h>
 #include <smpl/graph/goal_constraint.h>
+#include <smpl/console/detail/console_ros.h>
 
 namespace smpl {
 
@@ -64,6 +66,10 @@ public:
 
     virtual bool setStart(const RobotState& state);
     virtual bool setGoal(const GoalConstraint& goal);
+    virtual bool setPathConstraint(const GoalConstraint& path_constraint) {
+        return true;
+    };
+    virtual bool disablePathConstraints() {};
 
     virtual int getStartStateID() const = 0;
     virtual int getGoalStateID() const = 0;
@@ -125,6 +131,17 @@ public:
         FILE* f = nullptr) override = 0;
     ///@}
 
+    virtual void InitMovableSet(const std::vector<moveit_msgs::CollisionObject>& movables) {
+        SMPL_ERROR("Calling base class function");
+    };
+    virtual void InitMovableAgentsTraj(const std::vector<std::pair<int, clutter::Trajectory>>&
+        movable_agents_traj){
+        SMPL_ERROR("InitMovableAgentsTraj: Calling base class function");
+    };
+    virtual void SetConstraints(const std::vector<std::vector<double> >& constraints) {
+        SMPL_ERROR("Calling base class function");
+    };
+
 private:
 
     RobotModel* m_robot             = nullptr;
@@ -162,7 +179,7 @@ public:
 
     bool projectToPoint(int state_id, Vector3& pos) override
     {
-        Affine3 pose;
+        Isometry3 pose;
         if (!projectToPose(state_id, pose)) {
             return false;
         }
@@ -170,7 +187,7 @@ public:
         return true;
     }
 
-    virtual bool projectToPose(int state_id, Affine3& pose) = 0;
+    virtual bool projectToPose(int state_id, Isometry3& pose) = 0;
 };
 
 class ExtractRobotStateExtension : public virtual Extension

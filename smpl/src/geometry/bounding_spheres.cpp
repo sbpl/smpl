@@ -184,7 +184,7 @@ void ComputeMeshBoundingSpheresInternal(
         x /= len;
 
         Vector3 y = z.cross(x);
-        Affine3 T_mesh_triangle;
+        Isometry3 T_mesh_triangle;
         T_mesh_triangle(0, 0) = x[0];
         T_mesh_triangle(1, 0) = x[1];
         T_mesh_triangle(2, 0) = x[2];
@@ -205,7 +205,7 @@ void ComputeMeshBoundingSpheresInternal(
         T_mesh_triangle(2, 3) = p[2];
         T_mesh_triangle(3, 3) = 1.0;
 
-        Affine3 T_triangle_mesh = T_mesh_triangle.inverse();
+        Isometry3 T_triangle_mesh = T_mesh_triangle.inverse();
 
         //  transform the triangle vertices into the triangle frame
         Vector3 at = T_triangle_mesh * a;

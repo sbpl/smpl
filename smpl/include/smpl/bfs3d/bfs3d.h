@@ -55,7 +55,7 @@ public:
 
     void setWall(int x, int y, int z);
 
-    // \brief Clear cells around a given cell until freespace is encountered.
+    /// \brief Clear cells around a given cell until freespace is encountered.
     //
     // Clear cells around a given cell, in bfs-fashion, until a path has been
     // made to an existing free cell.

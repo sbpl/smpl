@@ -44,7 +44,7 @@
 
 namespace smpl {
 
-bool ManipLatticeActionSpace::init(ManipLattice* space)
+bool ManipLatticeActionSpace::init(RobotPlanningSpace* space)
 {
     if (!ActionSpace::init(space)) {
         return false;
@@ -432,7 +432,7 @@ bool ManipLatticeActionSpace::applyMotionPrimitive(
 
 bool ManipLatticeActionSpace::computeIkAction(
     const RobotState& state,
-    const Affine3& goal,
+    const Isometry3& goal,
     double dist_to_goal,
     ik_option::IkOption option,
     std::vector<Action>& actions)

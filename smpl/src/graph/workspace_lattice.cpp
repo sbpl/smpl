@@ -115,7 +115,7 @@ bool WorkspaceLattice::init(
     return true;
 }
 
-bool WorkspaceLattice::projectToPose(int state_id, Affine3& pose)
+bool WorkspaceLattice::projectToPose(int state_id, Isometry3& pose)
 {
     if (state_id == getGoalStateID()) {
         pose = goal().pose;

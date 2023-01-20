@@ -48,4 +48,10 @@ auto CollisionChecker::getCollisionModelVisualization(const RobotState& state)
     return { };
 }
 
+auto CollisionChecker::getCollisionWorldVisualization() const
+    -> visualization_msgs::MarkerArray
+{
+    return { };
+}
+
 } // namespace smpl

@@ -61,7 +61,7 @@ public:
 
     using const_iterator = std::vector<MotionPrimitive>::const_iterator;
 
-    bool init(ManipLattice* space);
+    bool init(RobotPlanningSpace* space);
 
     bool load(const std::string& action_filename);
 
@@ -113,7 +113,7 @@ protected:
 
     bool computeIkAction(
         const RobotState& state,
-        const Affine3& goal,
+        const Isometry3& goal,
         double dist_to_goal,
         ik_option::IkOption option,
         std::vector<Action>& actions);

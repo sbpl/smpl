@@ -97,7 +97,7 @@ bool CollisionSpace::setJointPosition(
 /// \brief Set the transform from the reference frame to the robot model frame
 /// \param transform The transform from the reference frame to the robot frame
 void CollisionSpace::setWorldToModelTransform(
-    const Eigen::Affine3d& transform)
+    const Eigen::Isometry3d& transform)
 {
     m_rcs->setWorldToModelTransform(transform);
     const int vfidx = m_rcm->jointVarIndexFirst(0);
@@ -200,7 +200,7 @@ bool CollisionSpace::removeShapes(const CollisionObject* object)
 bool CollisionSpace::attachObject(
     const std::string& id,
     const std::vector<shapes::ShapeConstPtr>& shapes,
-    const Affine3dVector& transforms,
+    const Isometry3dVector& transforms,
     const std::string& link_name)
 {
     return m_abcm->attachBody(id, shapes, transforms, link_name);
@@ -256,6 +256,16 @@ auto CollisionSpace::getCollisionRobotVisualization()
     for (auto& m : markers.markers) {
         m.header.frame_id = m_grid->getReferenceFrame();
     }
+    
+    // Add the attached collision object spheres
+    for (int ssidx : m_abcs->groupSpheresStateIndices(m_gidx)) {
+        m_abcs->updateSphereStates(ssidx);
+    }
+    auto markers_attached = m_abcs->getVisualization(m_gidx);
+    for (auto& m : markers_attached.markers) {
+        m.header.frame_id = m_grid->getReferenceFrame();
+        markers.markers.push_back(m);
+    }
     return markers;
 }
 
@@ -273,6 +283,16 @@ auto CollisionSpace::getCollisionRobotVisualization(
     for (auto& m : markers.markers) {
         m.header.frame_id = m_grid->getReferenceFrame();
     }
+
+    for (int ssidx : m_abcs->groupSpheresStateIndices(m_gidx)) {
+        m_abcs->updateSphereStates(ssidx);
+    }
+    auto markers_ao = m_abcs->getVisualization(m_gidx);
+    for (auto& m : markers_ao.markers) {
+        m.header.frame_id = m_grid->getReferenceFrame();
+    }
+    markers.markers.insert(markers.markers.end(), markers_ao.markers.begin(), markers_ao.markers.end());
+
     return markers;
 }
 
@@ -537,7 +557,6 @@ bool CollisionSpace::init(
     const std::vector<std::string>& planning_joints)
 {
     ROS_DEBUG_NAMED(LOG, "Initializing collision space for group '%s'", group_name.c_str());
-
     auto rcm = RobotCollisionModel::Load(urdf, config);
     return init(grid, rcm, group_name, planning_joints);
 }

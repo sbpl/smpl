@@ -108,7 +108,7 @@ void MultiFrameBfsHeuristic::updateGoal(const GoalConstraint& goal)
 {
     SMPL_DEBUG_NAMED(LOG, "Update goal");
 
-    Affine3 offset_pose =
+    Isometry3 offset_pose =
             goal.pose *
             Translation3(m_pos_offset[0], m_pos_offset[1], m_pos_offset[2]);
 

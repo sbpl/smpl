@@ -111,7 +111,7 @@ public:
     void getOccupiedVoxels(std::vector<Vector3>& voxels) const;
 
     void getOccupiedVoxels(
-        const Affine3& pose,
+        const Isometry3& pose,
         const std::vector<double>& dim,
         std::vector<Vector3>& voxels) const;
 

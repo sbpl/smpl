@@ -572,9 +572,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    cc.setWorldToModelTransform(Eigen::Affine3d::Identity());
+    cc.setWorldToModelTransform(Eigen::Isometry3d::Identity());
 
-    SV_SHOW_INFO(grid.getDistanceFieldVisualization(0.2));
+//    SV_SHOW_INFO(grid.getDistanceFieldVisualization(0.2));
 
     SV_SHOW_INFO(cc.getCollisionRobotVisualization());
     SV_SHOW_INFO(cc.getCollisionWorldVisualization());
@@ -651,11 +651,14 @@ int main(int argc, char* argv[])
     // plan
     ROS_INFO("Calling solve...");
     moveit_msgs::PlanningScene planning_scene;
+    ROS_INFO("Planning scene2");
+
     planning_scene.robot_state = start_state;
     if (!planner.solve(planning_scene, req, res)) {
         ROS_ERROR("Failed to plan.");
         return 1;
     }
+
 
     ///////////////////////////////////
     // Visualizations and Statistics //

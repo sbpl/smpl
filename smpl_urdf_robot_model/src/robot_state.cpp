@@ -14,15 +14,15 @@ namespace smpl {
 namespace urdf {
 
 static
-Affine3 ComputeJointTransform(const Joint* joint, const double* variables)
+Isometry3 ComputeJointTransform(const Joint* joint, const double* variables)
 {
     switch (joint->type) {
     case JointType::Fixed:
-        return Affine3::Identity();
+        return Isometry3::Identity();
     case JointType::Revolute:
-        return Affine3(AngleAxis(variables[0], joint->axis));
+        return Isometry3(AngleAxis(variables[0], joint->axis));
     case JointType::Prismatic:
-        return Affine3(Translation3(variables[0] * joint->axis));
+        return Isometry3(Translation3(variables[0] * joint->axis));
     case JointType::Planar:
         return Translation3(variables[0], variables[1], 0.0) *
                 AngleAxis(variables[2], Vector3::UnitZ());
@@ -37,7 +37,7 @@ Affine3 ComputeJointTransform(const Joint* joint, const double* variables)
 static
 void GetTransformVariables(
     const Joint* joint,
-    const Affine3* transform,
+    const Isometry3* transform,
     double* variables)
 {
     switch (joint->type) {
@@ -324,14 +324,14 @@ void SetJointPositions(RobotState* state, int index, const double* positions)
 void SetJointPositions(
     RobotState* state,
     const Joint* joint,
-    const Affine3* transform)
+    const Isometry3* transform)
 {
     double positions[7];
     GetTransformVariables(joint, transform, positions);
     return SetJointPositions(state, joint, positions);
 }
 
-void SetJointPositions(RobotState* state, int index, const Affine3* transform)
+void SetJointPositions(RobotState* state, int index, const Isometry3* transform)
 {
     return SetJointPositions(state, GetJoint(state->model, index), transform);
 }
@@ -615,12 +615,12 @@ void UpdateVisualBodyTransform(RobotState* state, int index)
 }
 
 auto GetLinkTransform(const RobotState* state, const Link* link)
-    -> const Affine3*
+    -> const Isometry3*
 {
     return GetLinkTransform(state, GetLinkIndex(state->model, link));
 }
 
-auto GetLinkTransform(const RobotState* state, int index) -> const Affine3*
+auto GetLinkTransform(const RobotState* state, int index) -> const Isometry3*
 {
     return &state->link_transforms[index];
 }
@@ -628,13 +628,13 @@ auto GetLinkTransform(const RobotState* state, int index) -> const Affine3*
 auto GetCollisionBodyTransform(
     const RobotState* state,
     const LinkCollision* collision)
-    -> const Affine3*
+    -> const Isometry3*
 {
     return GetCollisionBodyTransform(
             state, GetCollisionBodyIndex(state->model, collision));
 }
 
-auto GetCollisionBodyTransform(const RobotState* state, int index) -> const Affine3*
+auto GetCollisionBodyTransform(const RobotState* state, int index) -> const Isometry3*
 {
     return &state->link_collision_transforms[index];
 }
@@ -642,59 +642,59 @@ auto GetCollisionBodyTransform(const RobotState* state, int index) -> const Affi
 auto GetVisualBodyTransform(
     const RobotState* state,
     const LinkVisual* visual)
-    -> const Affine3*
+    -> const Isometry3*
 {
     return GetVisualBodyTransform(
             state, GetVisualBodyIndex(state->model, visual));
 }
 
-auto GetVisualBodyTransform(const RobotState* state, int index) -> const Affine3*
+auto GetVisualBodyTransform(const RobotState* state, int index) -> const Isometry3*
 {
     return &state->link_visual_transforms[index];
 }
 
 auto GetJointTransform(const RobotState* state, const Joint* joint)
-    -> const Affine3*
+    -> const Isometry3*
 {
     return GetJointTransform(state, GetJointIndex(state->model, joint));
 }
 
-auto GetJointTransform(const RobotState* state, int index) -> const Affine3*
+auto GetJointTransform(const RobotState* state, int index) -> const Isometry3*
 {
     return &state->joint_transforms[index];
 }
 
-auto GetUpdatedLinkTransform(RobotState* state, const Link* link) -> const Affine3*
+auto GetUpdatedLinkTransform(RobotState* state, const Link* link) -> const Isometry3*
 {
     UpdateLinkTransform(state, link);
     return GetLinkTransform(state, link);
 }
 
-auto GetUpdatedLinkTransform(RobotState* state, int index) -> const Affine3*
+auto GetUpdatedLinkTransform(RobotState* state, int index) -> const Isometry3*
 {
     UpdateLinkTransform(state, index);
     return GetLinkTransform(state, index);
 }
 
-auto GetUpdatedCollisionBodyTransform(RobotState* state, const LinkCollision* collision) -> const Affine3*
+auto GetUpdatedCollisionBodyTransform(RobotState* state, const LinkCollision* collision) -> const Isometry3*
 {
     UpdateCollisionBodyTransform(state, collision);
     return GetCollisionBodyTransform(state, collision);
 }
 
-auto GetUpdatedCollisionBodyTransform(RobotState* state, int index) -> const Affine3*
+auto GetUpdatedCollisionBodyTransform(RobotState* state, int index) -> const Isometry3*
 {
     UpdateCollisionBodyTransform(state, index);
     return GetCollisionBodyTransform(state, index);
 }
 
-auto GetUpdatedVisualBodyTransform(RobotState* state, const LinkVisual* visual) -> const Affine3*
+auto GetUpdatedVisualBodyTransform(RobotState* state, const LinkVisual* visual) -> const Isometry3*
 {
     UpdateVisualBodyTransform(state, visual);
     return GetVisualBodyTransform(state, visual);
 }
 
-auto GetUpdatedVisualBodyTransform(RobotState* state, int index) -> const Affine3*
+auto GetUpdatedVisualBodyTransform(RobotState* state, int index) -> const Isometry3*
 {
     UpdateVisualBodyTransform(state, index);
     return GetVisualBodyTransform(state, index);

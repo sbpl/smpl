@@ -125,7 +125,7 @@ int EuclidDistHeuristic::GetGoalHeuristic(int state_id)
     }
 
     if (m_pose_ext) {
-        Affine3 p;
+        Isometry3 p;
         if (!m_pose_ext->projectToPose(state_id, p)) {
             return 0;
         }
@@ -170,20 +170,20 @@ int EuclidDistHeuristic::GetFromToHeuristic(int from_id, int to_id)
     if (m_pose_ext) {
         if (from_id == planningSpace()->getGoalStateID()) {
             auto& gp = planningSpace()->goal().pose;
-            Affine3 p;
+            Isometry3 p;
             if (!m_pose_ext->projectToPose(to_id, p)) {
                 return 0;
             }
             return (int)(FIXED_POINT_RATIO * computeDistance(gp, p));
         } else if (to_id == planningSpace()->getGoalStateID()) {
             auto& gp = planningSpace()->goal().pose;
-            Affine3 p;
+            Isometry3 p;
             if (!m_pose_ext->projectToPose(from_id, p)) {
                 return 0;
             }
             return (int)(FIXED_POINT_RATIO * computeDistance(p, gp));
         } else {
-            Affine3 a, b;
+            Isometry3 a, b;
             if (!m_pose_ext->projectToPose(from_id, a) ||
                 !m_pose_ext->projectToPose(to_id, b))
             {
@@ -220,7 +220,7 @@ int EuclidDistHeuristic::GetFromToHeuristic(int from_id, int to_id)
     }
 }
 
-Affine3 EuclidDistHeuristic::createPose(
+Isometry3 EuclidDistHeuristic::createPose(
     const std::vector<double> &pose) const
 {
     return createPose(pose[0], pose[1], pose[2], pose[5], pose[4], pose[3]);
@@ -232,11 +232,11 @@ Vector3 EuclidDistHeuristic::createPoint(
     return Vector3(point[0], point[1], point[2]);
 }
 
-Affine3 EuclidDistHeuristic::createPose(
+Isometry3 EuclidDistHeuristic::createPose(
     double x, double y, double z,
     double Y, double P, double R) const
 {
-    return Affine3(
+    return Isometry3(
             Translation3(x, y, z) *
             AngleAxis(Y, Vector3::UnitZ()) *
             AngleAxis(P, Vector3::UnitY()) *
@@ -244,8 +244,8 @@ Affine3 EuclidDistHeuristic::createPose(
 }
 
 double EuclidDistHeuristic::computeDistance(
-    const Affine3& a,
-    const Affine3& b) const
+    const Isometry3& a,
+    const Isometry3& b) const
 {
     auto sqrd = [](double d) { return d * d; };
 

@@ -443,7 +443,7 @@ const RobotState& ManipLattice::extractState(int state_id)
     return m_states[state_id]->state;
 }
 
-bool ManipLattice::projectToPose(int state_id, Affine3& pose)
+bool ManipLattice::projectToPose(int state_id, Isometry3& pose)
 {
     if (state_id == getGoalStateID()) {
         pose = goal().pose;
@@ -578,7 +578,7 @@ int ManipLattice::reserveHashEntry()
 /// NOTE: const although RobotModel::computeFK used underneath may
 /// not be
 auto ManipLattice::computePlanningFrameFK(const RobotState& state) const
-    -> Affine3
+    -> Isometry3
 {
     assert(state.size() == robot()->jointVariableCount());
     assert(m_fk_iface);
@@ -593,6 +593,19 @@ int ManipLattice::cost(
 {
     auto DefaultCostMultiplier = 1000;
     return DefaultCostMultiplier;
+}
+
+static
+bool WithinPathOrientationTolerance(
+    const Isometry3& A,
+    const double tol[3])
+{
+    double yaw, pitch, roll;
+    get_euler_zyx(A.rotation(), yaw, pitch, roll);
+
+    SMPL_WARN("Check (%f, %f, %f) for path constraints", roll, pitch, yaw);
+
+    return (std::fabs(roll) < tol[0]) && (std::fabs(pitch) < tol[1]) && (std::fabs(yaw) < tol[2]);
 }
 
 bool ManipLattice::checkAction(const RobotState& state, const Action& action)
@@ -625,6 +638,20 @@ bool ManipLattice::checkAction(const RobotState& state, const Action& action)
 //            violation_mask |= 0x00000002;
 //            break;
 //        }
+
+        if (m_have_path_constraint)
+        {
+            auto pose = computePlanningFrameFK(istate);
+            if (!WithinPathOrientationTolerance(
+                    pose,
+                    m_path_constraint.rpy_tolerance))
+            {
+                SMPL_WARN("Path constraint violation!");
+                SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        -> violates path constraints");
+                violation_mask |= 0x00000016;
+                break;
+            }
+        }
     }
 
     if (violation_mask) {
@@ -662,8 +689,8 @@ bool ManipLattice::checkAction(const RobotState& state, const Action& action)
 
 static
 bool WithinPositionTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     auto dx = std::fabs(A.translation()[0] - B.translation()[0]);
@@ -674,8 +701,8 @@ bool WithinPositionTolerance(
 
 static
 bool WithinOrientationTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double tol[3])
 {
     Quaternion qg(B.rotation());
@@ -690,8 +717,8 @@ bool WithinOrientationTolerance(
 
 static
 auto WithinTolerance(
-    const Affine3& A,
-    const Affine3& B,
+    const Isometry3& A,
+    const Isometry3& B,
     const double xyz_tolerance[3],
     const double rpy_tolerance[3])
     -> std::pair<bool, bool>
@@ -842,6 +869,27 @@ bool ManipLattice::setGoal(const GoalConstraint& goal)
     }
 
     return success;
+}
+
+bool ManipLattice::setPathConstraint(const GoalConstraint& path_constraint)
+{
+    auto start_pose = computePlanningFrameFK(startState()), goal_pose = goal().pose;
+
+    if (!WithinPathOrientationTolerance(
+            start_pose,
+            path_constraint.rpy_tolerance) ||
+        !WithinPathOrientationTolerance(
+            goal_pose,
+            path_constraint.rpy_tolerance))
+    {
+        SMPL_WARN("Path constraint violation (start and/or goal)!");
+        SMPL_DEBUG_NAMED(G_EXPANSIONS_LOG, "        -> start and/or goal violate path constraints");
+        return false;
+    }
+
+    m_path_constraint = path_constraint;
+    m_have_path_constraint = true;
+    return true;
 }
 
 void ManipLattice::setVisualizationFrameId(const std::string& frame_id)

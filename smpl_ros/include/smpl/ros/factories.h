@@ -39,6 +39,13 @@ auto MakeManipLatticeEGraph(
     const OccupancyGrid* grid)
     -> std::unique_ptr<RobotPlanningSpace>;
 
+auto MakeManipLatticeCBS(
+    RobotModel* robot,
+    CollisionChecker* checker,
+    const PlanningParams& params,
+    const OccupancyGrid* grid)
+    -> std::unique_ptr<RobotPlanningSpace>;
+
 auto MakeWorkspaceLattice(
     RobotModel* robot,
     CollisionChecker* checker,

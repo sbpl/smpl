@@ -53,6 +53,7 @@
 #include <sbpl_collision_checking/self_collision_model.h>
 #include <sbpl_collision_checking/world_collision_model.h>
 #include <sbpl_collision_checking/types.h>
+#include <sbpl_collision_checking/shapes.h>
 
 namespace smpl {
 namespace collision {
@@ -90,7 +91,7 @@ public:
     /// \name Robot State
     ///@{
     bool setJointPosition(const std::string& name, double position);
-    void setWorldToModelTransform(const Eigen::Affine3d& transform);
+    void setWorldToModelTransform(const Eigen::Isometry3d& transform);
     ///@}
 
     void setPadding(double padding);
@@ -116,7 +117,7 @@ public:
     bool attachObject(
         const std::string& id,
         const std::vector<shapes::ShapeConstPtr>& shapes,
-        const Affine3dVector& transforms,
+        const Isometry3dVector& transforms,
         const std::string& link_name);
 
     bool detachObject(const std::string& id);
@@ -149,7 +150,7 @@ public:
     auto getRobotVisualization() const -> visualization_msgs::MarkerArray;
 
     auto getCollisionWorldVisualization() const
-        -> visualization_msgs::MarkerArray;
+        -> visualization_msgs::MarkerArray override;
     auto getCollisionRobotVisualization()
         -> visualization_msgs::MarkerArray;
     auto getCollisionRobotVisualization(const std::vector<double>& vals)

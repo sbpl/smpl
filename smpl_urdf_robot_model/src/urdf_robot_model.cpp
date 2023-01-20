@@ -93,11 +93,19 @@ void UpdateState(URDFRobotModel* model, const smpl::RobotState* state)
 }
 
 auto URDFRobotModel::computeFK(const smpl::RobotState& state)
-    -> Eigen::Affine3d
+    -> Eigen::Isometry3d
 {
     UpdateState(this, &state);
     UpdateLinkTransform(&this->robot_state, this->planning_link);
     return *GetLinkTransform(&this->robot_state, this->planning_link);
+}
+
+auto URDFRobotModel::computeFKLink(const smpl::RobotState& state, const Link* link)
+    -> Eigen::Isometry3d
+{
+    UpdateState(this, &state);
+    UpdateLinkTransform(&this->robot_state, link);
+    return *GetLinkTransform(&this->robot_state, link);
 }
 
 double URDFRobotModel::minPosLimit(int jidx) const

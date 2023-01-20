@@ -63,7 +63,9 @@ using Type = collision_detection::AllowedCollision::Type;
 template <class T>
 using AlignedVector = std::vector<T, Eigen::aligned_allocator<T>>;
 
-using Affine3dVector = AlignedVector<Eigen::Affine3d>;
+using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
+using Isometry3dVector = AlignedVector<Eigen::Isometry3d>;
+// Why twice?
 
 template <
     class Key,
@@ -73,7 +75,7 @@ template <
     class Allocator = std::allocator<std::pair<const Key, T>>>
 using hash_map = std::unordered_map<Key, T, Hash, KeyEqual, Allocator>;
 
-inline std::string AffineToString(const Eigen::Affine3d& t)
+inline std::string AffineToString(const Eigen::Isometry3d& t)
 {
     const Eigen::Vector3d pos(t.translation());
     const Eigen::Quaterniond rot(t.rotation());

@@ -134,13 +134,15 @@ public:
 
     /// \name Required Public Functions from PoseProjectionExtension
     ///@{
-    bool projectToPose(int state_id, Affine3& pos) override;
+    bool projectToPose(int state_id, Isometry3& pos) override;
     ///@}
 
     /// \name Required Public Functions from RobotPlanningSpace
     ///@{
     bool setStart(const RobotState& state) override;
     bool setGoal(const GoalConstraint& goal) override;
+    bool setPathConstraint(const GoalConstraint& path_constraint) override;
+    bool disablePathConstraints() override { m_have_path_constraint = false; };
     int getStartStateID() const override;
     int getGoalStateID() const override;
     bool extractPath(
@@ -181,7 +183,7 @@ protected:
     int getOrCreateState(const RobotCoord& coord, const RobotState& state);
     int reserveHashEntry();
 
-    Affine3 computePlanningFrameFK(const RobotState& state) const;
+    Isometry3 computePlanningFrameFK(const RobotState& state) const;
 
     int cost(
         ManipLatticeState* HashEntry1,
@@ -222,6 +224,9 @@ private:
     std::vector<ManipLatticeState*> m_states;
 
     std::string m_viz_frame_id;
+
+    GoalConstraint m_path_constraint;
+    bool m_have_path_constraint = false;
 
     bool setGoalPose(const GoalConstraint& goal);
     bool setGoalPoses(const GoalConstraint& goal);

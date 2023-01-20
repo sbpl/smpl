@@ -6,7 +6,7 @@ namespace smpl {
 namespace urdf {
 
 static
-auto PoseURDFToEigen(const ::urdf::Pose& p) -> Affine3
+auto PoseURDFToEigen(const ::urdf::Pose& p) -> Isometry3
 {
     return Translation3(p.position.x, p.position.y, p.position.z) *
             Quaternion(p.rotation.w, p.rotation.x, p.rotation.y, p.rotation.z);
@@ -262,7 +262,7 @@ bool InitRobotModel(
         wj.type = world_joint->type;
     } else {
         wj.name = "default_world_joint";
-        wj.origin = Affine3::Identity();
+        wj.origin = Isometry3::Identity();
         wj.axis = Vector3::Zero();
         wj.type = JointType::Floating;
     }
@@ -557,7 +557,7 @@ auto GetJointType(const Joint* joint) -> JointType
     return joint->type;
 }
 
-auto GetJointOrigin(const Joint* joint) -> const Affine3*
+auto GetJointOrigin(const Joint* joint) -> const Isometry3*
 {
     return &joint->origin;
 }

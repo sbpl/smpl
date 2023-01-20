@@ -3,6 +3,7 @@
 
 // standard includes
 #include <cstddef>
+#include <vector>
 
 // system includes
 #include <smpl/spatial.h>
@@ -97,7 +98,7 @@ auto CollisionBodies(const Link* link) -> range<const LinkCollision*>;
 //////////////////////
 
 auto GetJointType(const Joint* joint) -> JointType;
-auto GetJointOrigin(const Joint* joint) -> const Affine3*;
+auto GetJointOrigin(const Joint* joint) -> const Isometry3*;
 auto GetJointAxis(const Joint* joint) -> const Vector3*;
 auto GetVariableCount(const Joint* joint) -> size_t;
 auto GetFirstVariable(const Joint* joint) -> const JointVariable*;
@@ -161,14 +162,14 @@ struct Mesh : Shape
 
 struct LinkVisual
 {
-    Affine3 origin;
+    Isometry3 origin;
     Shape*  shape = NULL;
     Link*   link = NULL;
 };
 
 struct LinkCollision
 {
-    Affine3 origin;
+    Isometry3 origin;
     Shape*  shape = NULL;
     Link*   link = NULL;
 };
@@ -206,7 +207,7 @@ struct Joint
     std::string name;
 
     JointType type;
-    Affine3 origin;
+    Isometry3 origin;
     Vector3 axis;   // the axis for revolute and prismatic joints
 
     JointVariable* vfirst = NULL;
@@ -260,7 +261,7 @@ struct RobotModel
 
 struct JointSpec
 {
-    Affine3 origin;
+    Isometry3 origin;
     Vector3 axis;
     std::string name;
     JointType type;

@@ -211,7 +211,7 @@ void RobotCommandModel::setVariablePosition(int index, double value)
 
 bool RobotCommandModel::setFromIK(
     const moveit::core::JointModelGroup* group,
-    const Eigen::Affine3d& pose,
+    const Eigen::Isometry3d& pose,
     unsigned int attempts,
     double timeout,
     const moveit::core::GroupStateValidityCallbackFn& constraint,
@@ -284,7 +284,7 @@ bool RobotCommandModel::setToDefaultValues(
 
 void RobotCommandModel::setJointPositions(
     const moveit::core::JointModel* joint,
-    const Eigen::Affine3d& joint_transform)
+    const Eigen::Isometry3d& joint_transform)
 {
     // TODO: detect changes to state
     m_robot_state->setJointPositions(joint, joint_transform);

@@ -99,7 +99,7 @@ public:
     /// { x, y, z, R, P, Y } of the planning link
     ///
     /// \return true if forward kinematics were computed; false otherwise
-    virtual Affine3 computeFK(const RobotState& state) = 0;
+    virtual Isometry3 computeFK(const RobotState& state) = 0;
 };
 
 namespace ik_option {
@@ -125,14 +125,14 @@ public:
 
     /// \brief Compute an inverse kinematics solution.
     virtual bool computeIK(
-        const Affine3& pose,
+        const Isometry3& pose,
         const RobotState& start,
         RobotState& solution,
         ik_option::IkOption option = ik_option::UNRESTRICTED) = 0;
 
     /// \brief Compute multiple inverse kinematic solutions.
     virtual bool computeIK(
-        const Affine3& pose,
+        const Isometry3& pose,
         const RobotState& start,
         std::vector<RobotState>& solutions,
         ik_option::IkOption option = ik_option::UNRESTRICTED) = 0;
@@ -152,7 +152,7 @@ public:
     /// \brief Compute an inverse kinematics solution while restricting all
     ///     redundant joint variables to the seed state.
     virtual bool computeFastIK(
-        const Affine3& pose,
+        const Isometry3& pose,
         const RobotState& start,
         RobotState& solution) = 0;
 };

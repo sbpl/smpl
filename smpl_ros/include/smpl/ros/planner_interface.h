@@ -51,6 +51,7 @@
 #include <visualization_msgs/MarkerArray.h>
 
 // project includes
+#include <smpl/types.h>
 #include <smpl/collision_checker.h>
 #include <smpl/forward.h>
 #include <smpl/occupancy_grid.h>
@@ -94,7 +95,19 @@ public:
     bool solve(
         const moveit_msgs::PlanningScene& planning_scene,
         const moveit_msgs::MotionPlanRequest& req,
+        moveit_msgs::MotionPlanResponse& res,
+        bool passthrough=true);
+
+    bool run_solve(
+        const moveit_msgs::MotionPlanRequest& req,
         moveit_msgs::MotionPlanResponse& res);
+    bool solve_with_constraints(
+        const moveit_msgs::PlanningScene& planning_scene,
+        const moveit_msgs::MotionPlanRequest& req,
+        moveit_msgs::MotionPlanResponse& res,
+        const std::vector<moveit_msgs::CollisionObject>& movables,
+        const std::vector<std::vector<double> >& cvecs,
+        const std::vector<std::pair<int, clutter::Trajectory> >& movable_agents_traj);
 
     static
     bool SupportsGoalConstraints(
@@ -170,6 +183,7 @@ protected:
     // Set start configuration
     bool setGoal(const GoalConstraints& v_goal_constraints);
     bool setStart(const moveit_msgs::RobotState& state);
+    bool setPathConstraint(const moveit_msgs::Constraints& v_path_constraints);
 
     // Retrieve plan from sbpl
     bool plan(double allowed_time, std::vector<RobotState>& path);

@@ -50,6 +50,7 @@
 #include <smpl/console/console.h>
 #include <smpl/console/nonstd.h>
 #include <smpl/debug/visualize.h>
+#include <smpl/graph/manip_lattice_cbs.h>
 #include <smpl/heuristic/bfs_heuristic.h>
 #include <smpl/heuristic/egraph_bfs_heuristic.h>
 #include <smpl/heuristic/multi_frame_bfs_heuristic.h>
@@ -218,6 +219,14 @@ PlannerInterface::PlannerInterface(
         return MakeManipLatticeEGraph(r, c, p, m_grid);
     };
 
+    m_space_factories["manip_cbs"] = [this](
+        RobotModel* r,
+        CollisionChecker* c,
+        const PlanningParams& p)
+    {
+        return MakeManipLatticeCBS(r, c, p, m_grid);
+    };
+
     m_space_factories["workspace"] = [this](
         RobotModel* r,
         CollisionChecker* c,
@@ -368,7 +377,7 @@ void ConvertJointVariablePathToJointTrajectory(
     const std::string& multi_dof_joint_state_frame,
     moveit_msgs::RobotTrajectory& traj)
 {
-    SMPL_INFO("Convert Variable Path to Robot Trajectory");
+    // SMPL_INFO("Convert Variable Path to Robot Trajectory");
 
     traj.joint_trajectory.header.frame_id = joint_state_frame;
     traj.multi_dof_joint_trajectory.header.frame_id = multi_dof_joint_state_frame;
@@ -396,9 +405,9 @@ void ConvertJointVariablePathToJointTrajectory(
         }
     }
 
-    SMPL_INFO("  Path includes %zu single-dof joints and %zu multi-dof joints",
-            traj.joint_trajectory.joint_names.size(),
-            traj.multi_dof_joint_trajectory.joint_names.size());
+    // SMPL_INFO("  Path includes %zu single-dof joints and %zu multi-dof joints",
+    //         traj.joint_trajectory.joint_names.size(),
+    //         traj.multi_dof_joint_trajectory.joint_names.size());
 
     // empty or number of points in the path
     if (!traj.joint_trajectory.joint_names.empty()) {
@@ -693,10 +702,10 @@ bool PlannerInterface::solve(
     // TODO: this planning scene is probably not being used in any meaningful way
     const moveit_msgs::PlanningScene& planning_scene,
     const moveit_msgs::MotionPlanRequest& req,
-    moveit_msgs::MotionPlanResponse& res)
+    moveit_msgs::MotionPlanResponse& res,
+    bool passthrough)
 {
     ClearMotionPlanResponse(req, res);
-
     if (!m_initialized) {
         res.error_code.val = moveit_msgs::MoveItErrorCodes::FAILURE;
         return false;
@@ -736,6 +745,34 @@ bool PlannerInterface::solve(
         res.error_code.val = moveit_msgs::MoveItErrorCodes::START_STATE_IN_COLLISION;
         return false;
     }
+
+    if (!req.path_constraints.orientation_constraints.empty())
+    {
+        if (!setPathConstraint(req.path_constraints)) {
+            SMPL_ERROR("Failed to set path constraints");
+            res.planning_time = to_seconds(clock::now() - then);
+            res.error_code.val = moveit_msgs::MoveItErrorCodes::INVALID_GOAL_CONSTRAINTS;
+            return false;
+        }
+    }
+    else {
+        SMPL_INFO("disablePathConstraints");
+//        m_pspace->disablePathConstraints();
+    }
+
+
+    if (passthrough) {
+        ROS_INFO("Pass through");
+        return run_solve(req, res);
+    }
+    return false;
+}
+
+bool PlannerInterface::run_solve(
+    const moveit_msgs::MotionPlanRequest& req,
+    moveit_msgs::MotionPlanResponse& res)
+{
+    auto then = clock::now();
 
     std::vector<RobotState> path;
     if (!plan(req.allowed_planning_time, path)) {
@@ -788,6 +825,28 @@ bool PlannerInterface::solve(
 
     res.planning_time = to_seconds(clock::now() - then);
     return true;
+}
+
+bool PlannerInterface::solve_with_constraints(
+    // TODO: this planning scene is probably not being used in any meaningful way
+    const moveit_msgs::PlanningScene& planning_scene,
+    const moveit_msgs::MotionPlanRequest& req,
+    moveit_msgs::MotionPlanResponse& res,
+    const std::vector<moveit_msgs::CollisionObject>& movables,
+    const std::vector<std::vector<double> >& cvecs,
+    const std::vector<std::pair<int, clutter::Trajectory> >& movable_agents_traj)
+{
+    if (this->solve(planning_scene, req, res, false))
+    {
+        if (!cvecs.empty()) {
+            m_pspace->SetConstraints(cvecs);
+        }
+        m_pspace->InitMovableSet(movables);
+        m_pspace->InitMovableAgentsTraj(movable_agents_traj);
+        return this->run_solve(req, res);
+    }
+
+    return false;
 }
 
 static
@@ -843,7 +902,7 @@ bool ExtractJointStateGoal(
     if (fk_iface) {
         goal.pose = fk_iface->computeFK(goal.angles);
     } else {
-        goal.pose = Eigen::Affine3d::Identity();
+        goal.pose = Eigen::Isometry3d::Identity();
     }
 
     return true;
@@ -852,7 +911,7 @@ bool ExtractJointStateGoal(
 static
 bool ExtractGoalPoseFromGoalConstraints(
     const moveit_msgs::Constraints& constraints,
-    Eigen::Affine3d& goal_pose)
+    Eigen::Isometry3d& goal_pose)
 {
     assert(!constraints.position_constraints.empty() &&
            !constraints.orientation_constraints.empty());
@@ -872,7 +931,7 @@ bool ExtractGoalPoseFromGoalConstraints(
     auto& primitive_pose = position_constraint.constraint_region.primitive_poses.front();
 
     // undo the translation
-    Eigen::Affine3d T_planning_eef; // T_planning_off * T_off_eef;
+    Eigen::Isometry3d T_planning_eef; // T_planning_off * T_off_eef;
     tf::poseMsgToEigen(primitive_pose, T_planning_eef);
     Eigen::Vector3d eef_pos(T_planning_eef.translation());
 
@@ -950,7 +1009,7 @@ bool ExtractPoseGoal(
 
     SMPL_INFO_NAMED(PI_LOGGER, "Setting goal position");
 
-    Eigen::Affine3d goal_pose;
+    Eigen::Isometry3d goal_pose;
     if (!ExtractGoalPoseFromGoalConstraints(goal_constraints, goal_pose)) {
         SMPL_WARN_NAMED(PI_LOGGER, "Failed to extract goal pose from goal constraints");
         return false;
@@ -983,7 +1042,7 @@ bool ExtractPosesGoal(
     goal.poses.reserve(v_goal_constraints.size());
     for (size_t i = 0; i < v_goal_constraints.size(); ++i) {
         auto& constraints = v_goal_constraints[i];
-        Eigen::Affine3d goal_pose;
+        Eigen::Isometry3d goal_pose;
         if (!ExtractGoalPoseFromGoalConstraints(constraints, goal_pose)) {
             SMPL_WARN_NAMED(PI_LOGGER, "Failed to extract goal pose from goal constraints");
             return false;
@@ -1156,6 +1215,40 @@ bool PlannerInterface::setStart(const moveit_msgs::RobotState& state)
     return true;
 }
 
+bool PlannerInterface::setPathConstraint(const moveit_msgs::Constraints& v_path_constraints)
+{
+    GoalConstraint path_constraint;
+
+    if (IsPoseConstraint(v_path_constraints)) {
+        SMPL_INFO_NAMED(PI_LOGGER, "Got path pose constraint!");
+        if (!ExtractPoseGoal({ v_path_constraints }, path_constraint)) {
+            SMPL_ERROR("Failed to get path constraint pose");
+            return false;
+        }
+
+        if (path_constraint.pose.matrix() != Eigen::Matrix4d::Identity() ||
+                path_constraint.rpy_tolerance[0] <= 0.0 ||
+                path_constraint.rpy_tolerance[1] <= 0.0 ||
+                path_constraint.rpy_tolerance[2] <= 0.0)
+        {
+            SMPL_ERROR("Improper path constraint. Need identity pose and non-zero orientation tolerances.");
+            return false;
+        }
+    }
+    else
+    {
+        SMPL_ERROR("Path constraint type not supported! Only pose constraints are supported.");
+        return false;
+    }
+
+    if (!m_pspace->setPathConstraint(path_constraint)) {
+        SMPL_ERROR("Failed to set path constraint");
+        return false;
+    }
+
+    return true;
+}
+
 bool PlannerInterface::plan(double allowed_time, std::vector<RobotState>& path)
 {
     // NOTE: this should be done after setting the start/goal in the environment
@@ -1164,7 +1257,7 @@ bool PlannerInterface::plan(double allowed_time, std::vector<RobotState>& path)
     SV_SHOW_DEBUG_NAMED("bfs_walls", getBfsWallsVisualization());
     SV_SHOW_DEBUG_NAMED("bfs_values", getBfsValuesVisualization());
 
-    SMPL_WARN_NAMED(PI_LOGGER, "Planning!!!!!");
+    // SMPL_WARN_NAMED(PI_LOGGER, "Planning!!!!!");
     bool b_ret = false;
     std::vector<int> solution_state_ids;
 
@@ -1349,7 +1442,7 @@ bool PlannerInterface::parsePlannerID(
 
     boost::smatch sm;
 
-    SMPL_INFO("Match planner id '%s' against regex '%s'", planner_id.c_str(), alg_regex.str().c_str());
+    // SMPL_INFO("Match planner id '%s' against regex '%s'", planner_id.c_str(), alg_regex.str().c_str());
     if (!boost::regex_match(planner_id, sm, alg_regex)) {
         return false;
     }

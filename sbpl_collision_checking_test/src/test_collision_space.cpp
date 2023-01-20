@@ -58,23 +58,25 @@ int main(int argc, char **argv)
     std::string world_frame;
     double dims[3];
     double origin[3];
-    std::vector<std::string> joint_names(7);
+    std::vector<std::string> joint_names { "shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint",
+                                           "wrist_1_joint", "wrist_2_joint", "wrist_3_joint" };
 
-    ph.param<std::string>("group_name", group_name, "");
-    ph.param<std::string>("world_frame", world_frame, "");
-    ph.param("dims/x", dims[0], 2.0);
-    ph.param("dims/y", dims[1], 2.0);
-    ph.param("dims/z", dims[2], 2.0);
-    ph.param("origin/x", origin[0], -0.75);
-    ph.param("origin/y", origin[1], 1.25);
-    ph.param("origin/z", origin[2], -0.3);
-    ph.param<std::string>("joint_0", joint_names[0], "");
-    ph.param<std::string>("joint_1", joint_names[1], "");
-    ph.param<std::string>("joint_2", joint_names[2], "");
-    ph.param<std::string>("joint_3", joint_names[3], "");
-    ph.param<std::string>("joint_4", joint_names[4], "");
-    ph.param<std::string>("joint_5", joint_names[5], "");
-    ph.param<std::string>("joint_6", joint_names[6], "");
+    ph.param<std::string>("/smpl_ztp/robot_model/group_name", group_name, "");
+    ph.param<std::string>("/world_collision_model/frame_id", world_frame, "");
+    ph.param("/world_collision_model/size_x", dims[0], 2.0);
+    ph.param("/world_collision_model/size_y", dims[1], 2.0);
+    ph.param("/world_collision_model/size_z", dims[2], 2.0);
+    ph.param("/world_collision_model/origin_x", origin[0], -0.75);
+    ph.param("/world_collision_model/origin_y", origin[1], 1.25);
+    ph.param("/world_collision_model/origin_z", origin[2], -0.3);
+
+//    ph.param<std::string>("joint_0", joint_names[0], "");
+//    ph.param<std::string>("joint_1", joint_names[1], "");
+//    ph.param<std::string>("joint_2", joint_names[2], "");
+//    ph.param<std::string>("joint_3", joint_names[3], "");
+//    ph.param<std::string>("joint_4", joint_names[4], "");
+//    ph.param<std::string>("joint_5", joint_names[5], "");
+//    ph.param<std::string>("joint_6", joint_names[6], "");
 
     auto rit = std::remove_if(
             begin(joint_names), end(joint_names),
@@ -121,18 +123,17 @@ int main(int argc, char **argv)
 
     // add robot's pose in map
 
-    cspace.setWorldToModelTransform(Eigen::Affine3d::Identity());
+    cspace.setWorldToModelTransform(Eigen::Isometry3d::Identity());
     cspace.setJointPosition("right_gripper_finger_joint", 0.08);
     cspace.setJointPosition("left_gripper_finger_joint", 0.08);
 
-    std::vector<double> angles(7, 0.0);
-    angles[0] = -0.7;
-    angles[1] = 0.3;
-    angles[2] = 0.0;
-    angles[3] = 0.5;
-    angles[4] = 0.6;
-    angles[5] = 0.8;
-    angles[6] = 0.4;
+    std::vector<double> angles(6, 0.0);
+    angles[0] = 0.0;
+    angles[1] = -(M_PI / 2.0);
+    angles[2] = (M_PI / 2.0);
+    angles[3] = -(M_PI / 2.0);
+    angles[4] = -(M_PI / 2.0);
+    angles[5] = 0.0;
 
     ros::spinOnce();
     SV_SHOW_INFO(cspace.getBoundingBoxVisualization());
